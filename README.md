@@ -41,14 +41,14 @@ Opbouw van het object:
 
     $data = new data(); // initialiseer object
 
-    $data->filter_by_keyword("D&I", true); // filter op het keywoord 'D&I', als het laatste argument *true* is dan zijn **alle** antwoorden die terugkomen verbonden met dat keywoord.
-    $data->filter_by_keyword("banaan", false); // filter op het keywoord 'banaan', als het laatste argument *false* is dan worden alle antwoorden die verbonden zijn met dat keywoord teruggegeven. *false* is de standaard optie als je niks invult.
-    $data->search('zoekwoord'); // zoekt binnen alle gefilterde antwoorden naar 'zoekwoord'. Gebruik % als wildcard (zie functie commentaar voor verdere uitleg).
+    $data->filter_by_keyword("D&I", true); // filter op het keywoord 'D&I', als het laatste argument 'true' is dan zijn alle antwoorden die terugkomen verbonden met dat keywoord
+    $data->filter_by_keyword("banaan", false); // filter op het keywoord 'banaan', als het laatste argument 'false' is dan worden alle antwoorden die verbonden zijn met dat keywoord teruggegeven. 'false' is de standaard optie als je niks invult
+    $data->search('zoekwoord'); // zoekt binnen alle gefilterde antwoorden naar 'zoekwoord'. Gebruik % als wildcard (zie functie commentaar voor verdere uitleg)
 
 
-    $array_antwoorden = $data->get_responses(); // geeft een array terug met de gevonden antwoorden.
+    $array_antwoorden = $data->get_responses(); // geeft een array terug met de gevonden antwoorden
 
-Let op: Er moet minimaal één keywoord gegeven worden.
+**Let op:** Er moet minimaal één keywoord gegeven worden.
 
 ---
 
