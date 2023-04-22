@@ -1,4 +1,4 @@
-# Config file
+## Config file
 
 Create a config file in the root directory called 'config.php' with the following content:
     
@@ -17,7 +17,7 @@ Create a config file in the root directory called 'config.php' with the followin
 
 Make sure to put the correct information on the dots (...)
 
-# Keyword class
+## Keyword class
 
 opbouw van het object:
 
@@ -40,7 +40,7 @@ opbouw van het object:
  
     }
 
-## Voorbeeld
+### Voorbeeld
 
     $keyword = new keyword(); // initialiseer object
 
@@ -59,7 +59,7 @@ opbouw van het object:
     $keyword->delete(); // verwijderd het keywoord uit de database
 
 
-# Response class
+## Response class
 
 opbouw van het object:
 
@@ -82,7 +82,7 @@ opbouw van het object:
 
     }
 
-## voorbeeld
+### voorbeeld
   
     $response = new response(); // initialiseer object
 
