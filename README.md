@@ -1,4 +1,4 @@
-# Congif file
+# Config file
 
 Create a config file in the root directory called 'config.php' with the following content:
     
