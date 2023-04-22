@@ -1,15 +1,77 @@
+#firstandlastwarning {
+    position: fixed;
+    display: grid;
+    width: 100%;
+    height: 100%;
+
+    background-color: #ffffff81;
+    backdrop-filter: blur(9px);
+
+    align-content: center;
+    justify-content: center;
+    
+}
+
+#firstandlastwarning p, #firstandlastwarning h1 {
+    max-width: 300px;
+    margin: 0.5rem;
+    padding: 1rem;
+    border-radius: 15px;
+    background-color: #ff9900;
+    
+}
+
+#firstandlastwarning button {
+    width: 100%;
+}
+
 .info {
-    margin-top: 1em;
-    margin-bottom: 1em;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
     padding-bottom: 1em;
-    border-bottom: 1px solid black;
+
+    cursor: pointer;
 }
 
 .info p {
     padding: 1em;
     border-radius: 15px;
-    background-color: #ecf388;
+    background-color: #88d1f3;
+    
 }
+
+/*
+
+defaults
+
+*/
+
+body {
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+/*
+
+GRID
+
+*/
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+/*
+
+Containers keywords and responses
+
+*/
 
 .containerKeywords, .containerResponses {
     margin-top: 1em;
@@ -18,19 +80,61 @@
     border-bottom: 1px solid black;
 }
 
+.addKeyword, .addResponse {
+    margin-bottom: 1em;
+}
+
 .containerKeywords label, .containerResponses label {
     display: block;
 }
 
+/*
+
+keyword list
+
+*/
+
+.containerKeywords ul {
+    list-style-type:disc;
+    list-style-position: inside;
+    margin: 0;
+    padding: 0;
+}
+
+.containerKeywords li {
+    margin-top: 2px;
+    padding: 0.2em;
+}
+
+
+/*
+
+response list
+
+*/
+
 .responseList ul {
     list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .responseList .response {
     margin-bottom: 1em;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    background-color: #e9e9e9;
+}
+
+.responseList .response ul {
+    list-style-type:disc;
+    list-style-position: inside;
+    margin: 0;
+    padding: 0;
 }
 
 .responseList .tip {
+    display: block;
     font-size: 0.8em;
     color: #8a8a8a;
 }

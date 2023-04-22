@@ -43,7 +43,7 @@ class keyword {
         
     /**
      * Sets the keyword.
-     * Checks for max length of 50, returning false if > 50.
+     * Checks for min (set in MIN_KEYWORD_LENGTH) and max (50 characters) length, returning false if keyword is too short or too long.
      * Returns true if name is set. Use save() to save the keyword to the database.
      *
      * @param string $keyword keyword with max length of 50.
@@ -53,6 +53,7 @@ class keyword {
      * 
      */
     public function set_keyword(string $keyword) : bool {
+        if(strlen($keyword) < MIN_KEYWORD_LENGTH) return false;
         if(strlen($keyword) > 50) return false;
         $this->keyword = $keyword;
 
