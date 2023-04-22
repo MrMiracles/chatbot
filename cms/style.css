@@ -1,0 +1,41 @@
+.info {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid black;
+}
+
+.info p {
+    padding: 1em;
+    border-radius: 15px;
+    background-color: #ecf388;
+}
+
+.containerKeywords, .containerResponses {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    border-bottom: 1px solid black;
+}
+
+.containerKeywords label, .containerResponses label {
+    display: block;
+}
+
+.responseList ul {
+    list-style-type: none;
+}
+
+.responseList .response {
+    margin-bottom: 1em;
+}
+
+.responseList .tip {
+    font-size: 0.8em;
+    color: #8a8a8a;
+}
+
+.responseList .response:hover {
+    background-color: #ececec8e;
+}
+

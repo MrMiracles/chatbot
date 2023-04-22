@@ -13,6 +13,8 @@ Create a config file in the root directory called 'config.php' with the followin
     define('MIN_KEYWORD_LENGTH', 3); // Minimum lengt of an keyword to be saved to the database
     define('MIN_RESPONSE_LENGTH', 5); // Minimum lengt of an keyword to be saved to the database
 
+    define('CMS_PASS', '...'); // simpel password for the simpel cms thingy
+
     ?>
 
 Make sure to put the correct information on the dots (...)

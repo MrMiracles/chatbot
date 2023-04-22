@@ -147,13 +147,13 @@ class response {
      */
     public function save() : bool {
         if($this->id === null) { // new response, insert into database
-            if(strlen($this->response) < MIN_RESPONSE_LENGTH) return false; // check if length of the keyword is long enough, return false if not
+            if(strlen($this->response) < MIN_RESPONSE_LENGTH) return false; // check if length of the response is long enough, return false if not
             $mysql_prepare = $this->mysql_connection->prepare('INSERT INTO responses (response) VALUES (?)');
             $mysql_prepare->bind_param('s', $this->response);
             $mysql_prepare->execute();
             $this->id = $this->mysql_connection->insert_id;
         } else { // existing response, update
-            if(strlen($this->response) < MIN_RESPONSE_LENGTH) return false; // check if length of the keyword is long enough, return false if not
+            if(strlen($this->response) < MIN_RESPONSE_LENGTH) return false; // check if length of the response is long enough, return false if not
             $mysql_prepare = $this->mysql_connection->prepare('UPDATE responses SET response=? WHERE id=?');
             $mysql_prepare->bind_param('si', $this->response, $this->id);
             $mysql_prepare->execute();
@@ -198,6 +198,12 @@ class response {
     public function delete() : bool {
         if($this->id === null) return false; // no ID set, return false
         $mysql_prepare = $this->mysql_connection->prepare('DELETE FROM responses WHERE id=?');
+        $mysql_prepare->bind_param('i', $this->id);
+        $mysql_prepare->execute();
+        return true;
+
+        // also delete all the connections with keywords
+        $mysql_prepare = $this->mysql_connection->prepare('DELETE FROM keyword_x_responses WHERE response_id=?');
         $mysql_prepare->bind_param('i', $this->id);
         $mysql_prepare->execute();
         return true;

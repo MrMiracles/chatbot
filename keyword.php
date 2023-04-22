@@ -223,12 +223,17 @@ class keyword {
      * Deletes a keyword from the database.
      *
      * @return bool Returns true on succes, false if no ID is given.
-     *              Make sure the ID is set using functions get() or get_keyword_by_name()
+     *              Make sure the ID is set using functions get_keyword_by_id() or get_keyword_by_name()
      * 
      */
     public function delete() : bool {
         if($this->id === null) return false; // no ID set, return false
         $mysql_prepare = $this->mysql_connection->prepare('DELETE FROM keywords WHERE id=?');
+        $mysql_prepare->bind_param('i', $this->id);
+        $mysql_prepare->execute();
+
+        // also delete all the connections with responses
+        $mysql_prepare = $this->mysql_connection->prepare('DELETE FROM keyword_x_responses WHERE keyword_id=?');
         $mysql_prepare->bind_param('i', $this->id);
         $mysql_prepare->execute();
         return true;
