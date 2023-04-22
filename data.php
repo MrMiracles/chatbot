@@ -3,19 +3,12 @@
 /*
  *  data {
  * 
- *      
- * 
  *      get_responses()
  *      
  *      filter_by_keyword(<string>, <bool>)
+ *      search(<string>)
  * 
  *  }
- * 
- *
- * 
-
- * 
- * 
  * 
  */
 
@@ -30,6 +23,7 @@
     private array $responses = array();
     private array $keywords_any = array();
     private array $keywords_contains = array();
+    private ?string $search_query = null;
     private bool $new_search = true;
 
 
@@ -46,7 +40,7 @@
      * @return mixed array(array(id, response)) or false on failure (no rounds not found)
      * 
      */
-    public function get_responses() {
+    public function get_responses() : array {
         if($this->new_search == false) return $this->responses; // return the previous responses if the keyword hasn't changed
 
         if(count($this->keywords_any) <= 0 && count($this->keywords_contains) <= 0) {
@@ -60,7 +54,7 @@
             responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
             LEFT JOIN keywords AS k ON k.id=x.keyword_id
             WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").')
-            ORDER BY r.id;';
+            ORDER BY r.id';
         } elseif(count($this->keywords_contains) > 1) {
             $sql = '
             SELECT DISTINCT r.id, r.response FROM
@@ -77,7 +71,7 @@
                 	rid
                 HAVING count(x.response_id) >= '.count($this->keywords_contains).'
                 )
-            ORDER BY r.id;';
+            ORDER BY r.id';
         } else {
             $sql = '
             SELECT DISTINCT r.id, r.response FROM
@@ -85,14 +79,20 @@
             LEFT JOIN keywords AS k ON k.id=x.keyword_id
             WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
             AND k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
-            ORDER BY r.id;';
+            ORDER BY r.id';
         }
 
-        // echo $sql;
+        $parameters = array_merge($this->keywords_any, $this->keywords_contains); // combine both array's in one
+
+        if($this->search_query !== null) { // some searchquery givin, lets use it!
+            $sql = "SELECT resp.response FROM (".$sql.") AS resp WHERE resp.response LIKE ?";
+            $parameters[] = $this->search_query; // add search query to parameters
+        }
+
+         echo $sql;
 
         $mysql_prepare = $this->mysql_connection->prepare($sql);
-        $combined_keywords = array_merge($this->keywords_any, $this->keywords_contains); // combine both array's in one
-        $mysql_prepare->bind_param(str_repeat('s', count($combined_keywords)), ...$combined_keywords);
+        $mysql_prepare->bind_param(str_repeat('s', count($parameters)), ...$parameters);
         $mysql_prepare->execute();
         $mysql_result = $mysql_prepare->get_result();
         if($mysql_result->num_rows == 0) return false; // return false if no rows are being fetched
@@ -113,7 +113,7 @@
      * @return bool This always returns true because nothing is checked.
      * 
      */
-    public function filter_by_keyword(string $keyword, bool $contains_keyword=false) {
+    public function filter_by_keyword(string $keyword, bool $contains_keyword=false) : bool {
         if($contains_keyword == false) {
             $this->keywords_any[] = $keyword;
         } else {
@@ -121,6 +121,26 @@
             $this->keywords_contains[] = $keyword;
         }
         $this->new_search = true; // make sure a new database request is done.
+        return true;
+    }
+
+    /**
+     * Filter the responses by given query. Use % as a wildcard.
+     * This function is case insensitive (if the database is also case-insensitive).
+     * 
+     * For example: 
+     * - %t returns everything that end's with a t: 'respect', 'flat', etc. 
+     * - %e% returns everyting with an e in it: 'beer', 'camel', etc.
+     * - m% returns everything that starts with a m: 'monkey', 'more', etc.
+     * Responses are first filtert by keyword then by query.
+     *
+     * @param string $query
+     * 
+     * @return bool Returns always true, no checks are made.
+     * 
+     */
+    public function search(string $query) : bool {
+        $this->search_query = $query;
         return true;
     }
 

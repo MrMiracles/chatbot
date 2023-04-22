@@ -9,6 +9,7 @@ $data->filter_by_keyword("appel", false);
 $data->filter_by_keyword("kiwi", false);
 $data->filter_by_keyword("peer", false);
 $data->filter_by_keyword("banaan", false);
+$data->search('%O%');
 
 
 $pok = $data->get_responses();
