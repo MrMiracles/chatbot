@@ -14,6 +14,13 @@ if(!isset($_SESSION['login'])) { // nog geen login, toon login pagina en stop he
             $_SESSION['login'] = true;
         } else { // login fail
             echo "Helaas pindakaas, verkeerde wachtwoord!";
+
+            echo '<form action="index.php?a=login" method="post">
+            <input name="password" type="password" placeholder="Voer wachtwoord in">
+            <input type="submit" value="login!">
+            </form>';
+
+            exit;
         }
     } else {
 
@@ -77,7 +84,18 @@ function do_action(string $a) {
 
             $response = new response();
             $posted_response = htmlspecialchars($_POST['response']);
+            $posted_response_keywords = htmlspecialchars($_POST['keywords']);
             $response->set_response($posted_response);
+            $bind_keywords = explode(',', $posted_response_keywords);
+            foreach($bind_keywords as $bind_keyword) {
+                $keyword = new keyword();
+                if(!$keyword->get_keyword_by_name(trim($bind_keyword))) {
+                    // keywoord niet gevonden, voeg toe.
+                    $keyword->set_keyword(trim($bind_keyword));
+                    $keyword->save();
+                }
+                $response->bind_response_to_keyword($keyword->get_id());
+            }
             if($response->save()) {
                 return "Antwoord Toegevoegd: <br>".nl2br($posted_response);
             } else {
@@ -172,8 +190,8 @@ function do_action(string $a) {
                 echo '
                 <div id="firstandlastwarning">
                     <h1>Let op!</h1>
-                    <p>Door op het prullenbakje <img src="delete.png" width="16" /> te klikken verwijder je <b>zonder waarschuwing</b> een keywoord of antwoord en de verbindingen tussenbeide.<br/><br/>
-                    Door op het het verbroken kettingkje <img src="unlink.png" width="16" /> te klikken verwijder je <b>zonder waarschuwing</b> een verbinding tussen een keywoord en antwoord.<br/><br/>
+                    <p>Door op het prullenbakje <img src="delete.png" width="16" style="background-color: #efefef; padding: 5px; border-radius:100%; position: relative; top:0.5em" /> te klikken verwijder je <b>zonder waarschuwing</b> een keywoord of antwoord en de verbindingen tussenbeide.<br/><br/>
+                    Door op het het kruisje <img src="unlink.png" width="16" style="background-color: #efefef; padding: 5px; border-radius:100%; position: relative; top:0.5em" /> te klikken verwijder je <b>zonder waarschuwing</b> de verbinding tussen een keywoord en antwoord.<br/><br/>
                     <button  onclick="hideDiv(\'firstandlastwarning\')">Gelezen & sluiten</button>
                     </p>
                 </div>
@@ -208,7 +226,7 @@ function do_action(string $a) {
                     if($mysql_result->num_rows == 0) echo "Geen keywoorden gevonden.";
                     
                     while ($row = $mysql_result->fetch_assoc()) {
-                        echo "<li>".$row['keyword']." <a href=\"index.php?a=deleteKeyword&id=".$row['id']."\"><img src=\"delete.png\" width=\"16\" /></a></li>";
+                        echo "<li>".$row['keyword']." <a href=\"index.php?a=deleteKeyword&id=".$row['id']."\"><img src=\"delete.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
                     }
                     ?>
                 </ul>
@@ -222,7 +240,8 @@ function do_action(string $a) {
             <div class="addResponse">
                 <form action="index.php?a=addResponse" method="post">
                     <label>Voeg antwoord toe:</label>
-                    <textarea name="response" rows="5" cols="50"></textarea>
+                    <textarea name="response" rows="5" cols="50" placeholder="Typ hier een antwoord." place></textarea>
+                    <textarea name="keywords" rows="5" cols="50" placeholder="Typ hier keywords die verbonden moeten worden met het antwoord. Scheidt de keywoorden met comma's." place></textarea>
                     <input type="submit" value="Toevoegen">
                 </form>
             </div>
@@ -251,18 +270,18 @@ function do_action(string $a) {
                         if($last_id != $row['id']) { // nieuw response
                             if($last_id != 0) {
                                 echo '<form action="index.php?a=linkKeyword&respid='.$last_id.'" method="post">
-                                <input name="keyword" type="text" autocomplete="off" list="keywords" placeholder="verbind met keywoord">
+                                <input name="keyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
                                 <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
                                 </form>';
                                 echo "</ul></div></li>"; // sluit laatste item af
                             }
                             $last_id = $row['id'];
                             echo "<li class=\"response\">";
-                            echo "<div><b>".$row['response']."</b> <a href=\"index.php?a=deleteResponse&id=".$row['id']."\"><img src=\"delete.png\" width=\"16\" /></a></div>";
+                            echo "<div><b>".$row['response']."</b> <a href=\"index.php?a=deleteResponse&id=".$row['id']."\"> <img src=\"delete.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></div>";
                             echo "<div><ul>";
-                            if($row['keyword'] != null) echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"><img src=\"unlink.png\" width=\"16\" /></a></li>";
+                            if($row['keyword'] != null) echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
                         } else { // zelfde antwoord
-                            echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"><img src=\"unlink.png\" width=\"16\" /></a></li>";
+                            echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
                         }
                         
                         

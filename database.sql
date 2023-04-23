@@ -11,7 +11,7 @@
 CREATE TABLE `keywords` (
   `id` int UNSIGNED NOT NULL,
   `keyword` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -22,7 +22,7 @@ CREATE TABLE `keywords` (
 CREATE TABLE `keyword_x_responses` (
   `keyword_id` int UNSIGNED NOT NULL,
   `response_id` int UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -33,7 +33,7 @@ CREATE TABLE `keyword_x_responses` (
 CREATE TABLE `responses` (
   `id` int UNSIGNED NOT NULL,
   `response` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
 
@@ -69,4 +69,3 @@ ALTER TABLE `keywords`
 --
 ALTER TABLE `responses`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
-COMMIT;
