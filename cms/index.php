@@ -93,9 +93,8 @@ function do_action(string $a) {
                     if(!$keyword->get_keyword_by_name(trim($bind_keyword))) {
                         // keywoord niet gevonden, voeg toe.
                         $keyword->set_keyword(trim($bind_keyword));
-                        $keyword->save();
                     }
-                    $response->bind_response_to_keyword($keyword->get_id());
+                    if($keyword->save()) $response->bind_response_to_keyword($keyword->get_id());
                 }
             }
             if($response->save()) {
@@ -172,9 +171,11 @@ function do_action(string $a) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html  lang="nl-nl">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data CMS - Chatbot Fontys</title>
     <link rel="stylesheet" href="style.css">
 
@@ -207,6 +208,69 @@ function do_action(string $a) {
 
     <div class="gridContainer">
 
+        <div class="containerResponses">
+
+            <h1>Antwoorden</h1>
+
+            <div class="addResponse">
+                <form action="index.php?a=addResponse" method="post">
+                    <label>Voeg antwoord toe:</label>
+                    <textarea name="response" placeholder="Typ hier een antwoord."></textarea>
+                    <textarea name="keywords" placeholder="Typ hier keywords die verbonden moeten worden met het antwoord. Scheid de keywoorden met komma's." place></textarea>
+                    <input type="submit" value="Toevoegen">
+                </form>
+            </div>
+
+            <div class="responseList">
+                <ul>
+                    <?php
+                    // create list with keywords
+                    $mysql_prepare = $mysql_connection->prepare('SELECT keyword FROM keywords ORDER BY keyword ASC');
+                    $mysql_prepare->execute();
+                    $mysql_result = $mysql_prepare->get_result();
+                    echo "<datalist id=\"keywords\">";
+                    while ($row = $mysql_result->fetch_assoc()) {
+                        echo "<option>".$row['keyword']."</option>";
+                    }
+                    echo "</datalist>";
+
+
+                    $mysql_prepare = $mysql_connection->prepare('SELECT r.id, r.response, k.keyword, x.keyword_id FROM responses AS r LEFT JOIN keyword_x_responses AS x ON x.response_id = r.id LEFT JOIN keywords AS k ON x.keyword_id = k.id ORDER BY r.id DESC');
+                    $mysql_prepare->execute();
+                    $mysql_result = $mysql_prepare->get_result();
+                    if($mysql_result->num_rows == 0) echo "Geen antwoorden gevonden.";
+                    
+                    $last_id = 0;
+                    while ($row = $mysql_result->fetch_assoc()) {
+                        if($last_id != $row['id']) { // nieuw response
+                            if($last_id != 0) {
+                                echo "</ul>"; // sluit laatste item af
+                                echo '<form action="index.php?a=linkKeyword&respid='.$last_id.'" method="post">
+                                <input name="keyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
+                                <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
+                                </form>';
+                                echo "</div></li>"; // sluit laatste item af
+                            }
+                            $last_id = $row['id'];
+                            echo "<li class=\"response\">";
+                            echo "<div><b class=response_text>".$row['response']."</b> <a class=\"delete\" href=\"index.php?a=deleteResponse&id=".$row['id']."\"> <img src=\"delete.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></div>";
+                            echo "<div><ul>";
+                            if($row['keyword'] != null) echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
+                        } else { // zelfde antwoord
+                            echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
+                        }
+                    }
+                    echo "</ul>"; // sluit laatste item af
+                    echo '<form action="index.php?a=linkKeyword&respid='.$last_id.'" method="post">
+                                <input name="keyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
+                                <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
+                                </form>';
+                    echo "</div></li>"; // sluit laatste item af
+                    ?>
+                </ul>
+            </div>
+        </div>
+
         <div class="containerKeywords">
 
             <h1>Keywords</h1>
@@ -235,65 +299,7 @@ function do_action(string $a) {
             </div>
         </div>
 
-        <div class="containerResponses">
-
-            <h1>Antwoorden</h1>
-
-            <div class="addResponse">
-                <form action="index.php?a=addResponse" method="post">
-                    <label>Voeg antwoord toe:</label>
-                    <textarea name="response" rows="5" cols="50" placeholder="Typ hier een antwoord." place></textarea>
-                    <textarea name="keywords" rows="5" cols="50" placeholder="Typ hier keywords die verbonden moeten worden met het antwoord. Scheidt de keywoorden met comma's." place></textarea>
-                    <input type="submit" value="Toevoegen">
-                </form>
-            </div>
-
-            <div class="responseList">
-                <ul>
-                    <?php
-                    // create list with keywords
-                    $mysql_prepare = $mysql_connection->prepare('SELECT keyword FROM keywords ORDER BY keyword ASC');
-                    $mysql_prepare->execute();
-                    $mysql_result = $mysql_prepare->get_result();
-                    echo "<datalist id=\"keywords\">";
-                    while ($row = $mysql_result->fetch_assoc()) {
-                        echo "<option>".$row['keyword']."</option>";
-                    }
-                    echo "</datalist>";
-
-
-                    $mysql_prepare = $mysql_connection->prepare('SELECT r.id, r.response, k.keyword, x.keyword_id FROM responses AS r LEFT JOIN keyword_x_responses AS x ON x.response_id = r.id LEFT JOIN keywords AS k ON x.keyword_id = k.id ORDER BY r.id DESC');
-                    $mysql_prepare->execute();
-                    $mysql_result = $mysql_prepare->get_result();
-                    if($mysql_result->num_rows == 0) echo "Geen antwoorden gevonden.";
-                    
-                    $last_id = 0;
-                    while ($row = $mysql_result->fetch_assoc()) {
-                        if($last_id != $row['id']) { // nieuw response
-                            if($last_id != 0) {
-                                echo '<form action="index.php?a=linkKeyword&respid='.$last_id.'" method="post">
-                                <input name="keyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
-                                <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
-                                </form>';
-                                echo "</ul></div></li>"; // sluit laatste item af
-                            }
-                            $last_id = $row['id'];
-                            echo "<li class=\"response\">";
-                            echo "<div><b>".$row['response']."</b> <a href=\"index.php?a=deleteResponse&id=".$row['id']."\"> <img src=\"delete.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></div>";
-                            echo "<div><ul>";
-                            if($row['keyword'] != null) echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
-                        } else { // zelfde antwoord
-                            echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
-                        }
-                    }
-                    echo '<form action="index.php?a=linkKeyword&respid='.$last_id.'" method="post">
-                                <input name="keyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
-                                <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
-                                </form>';
-                    ?>
-                </ul>
-            </div>
-        </div>
+        
     </div>
 
 </body>

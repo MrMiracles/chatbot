@@ -9,6 +9,8 @@
 
     align-content: center;
     justify-content: center;
+
+    z-index: 10;
     
 }
 
@@ -33,6 +35,7 @@
     padding-bottom: 1em;
 
     cursor: pointer;
+    z-index: 10;
 }
 
 .info p {
@@ -48,7 +51,8 @@ defaults
 
 */
 
-body {
+* {
+    box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
 }
 
@@ -64,8 +68,17 @@ GRID
 
 .gridContainer {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 2fr 1fr;
 }
+
+/* Use a media query to add a breakpoint at 800px: */
+@media screen and (max-width: 800px) {
+    .gridContainer {
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto auto;
+    }
+  }
 
 /*
 
@@ -77,12 +90,36 @@ Containers keywords and responses
     margin-top: 1em;
     margin-bottom: 1em;
     padding: 1em;
-    border-bottom: 1px solid black;
 }
 
 .addKeyword, .addResponse {
     margin-bottom: 1em;
+    padding: 0.5em;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+
+
+.addResponse label {
+    grid-column: 1 / span 2;
+}
+
+.addResponse textarea {
+    width: 100%;
+    height: 5em;
+    grid-row: 2;
+}
+
+.addResponse input {
+    grid-column: 1 / span 2;
+}
+
+.addResponse form {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto auto;
+    gap: 3px;
+}
+
 
 .containerKeywords label, .containerResponses label {
     display: block;
@@ -120,16 +157,37 @@ response list
 }
 
 .responseList .response {
+    position: relative;
     margin-bottom: 1em;
     padding: 0.5em;
     border-radius: 0.5em;
     background-color: #e9e9e9;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    z-index: 0;
 }
+
+.responseList .response_text {
+    position: absolute;
+    display: inline-block;
+    max-width: calc(100% - 5em);
+    height: 2em;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.responseList .delete {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
 
 .responseList .response ul {
     list-style-type:disc;
     list-style-position: inside;
-    margin: 0;
+    margin: 1.5em 0 1em 0;
     padding: 0;
 }
 
