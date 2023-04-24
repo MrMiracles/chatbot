@@ -60,6 +60,12 @@ h1 {
     font-size: 1.5em;
 }
 
+.tip {
+    display: block;
+    font-size: 0.8em;
+    color: #8a8a8a;
+}
+
 /*
 
 GRID
@@ -71,14 +77,14 @@ GRID
     grid-template-columns: 2fr 1fr;
 }
 
-/* Use a media query to add a breakpoint at 800px: */
+/* smaller screen then 800px: */
 @media screen and (max-width: 800px) {
     .gridContainer {
         display: grid;
         grid-template-columns: auto;
         grid-template-rows: auto auto;
     }
-  }
+}
 
 /*
 
@@ -106,7 +112,6 @@ Containers keywords and responses
 .addResponse textarea {
     width: 100%;
     height: 5em;
-    grid-row: 2;
 }
 
 .addResponse input {
@@ -120,6 +125,26 @@ Containers keywords and responses
     gap: 3px;
 }
 
+/* smaller screen then 800px: */
+@media screen and (max-width: 800px) {
+    .addResponse form {
+        display: grid;
+        grid-template-rows: auto auto auto auto;
+        grid-template-columns: auto;
+        gap: 3px;
+    }
+
+    .addResponse label {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .addResponse input {
+        grid-column: 1;
+        grid-row: 4;
+    }
+    
+}
 
 .containerKeywords label, .containerResponses label {
     display: block;
@@ -170,7 +195,6 @@ response list
     position: absolute;
     display: inline-block;
     max-width: calc(100% - 5em);
-    height: 2em;
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -189,12 +213,6 @@ response list
     list-style-position: inside;
     margin: 1.5em 0 1em 0;
     padding: 0;
-}
-
-.responseList .tip {
-    display: block;
-    font-size: 0.8em;
-    color: #8a8a8a;
 }
 
 .responseList .response:hover {

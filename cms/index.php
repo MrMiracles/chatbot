@@ -183,6 +183,17 @@ function do_action(string $a) {
         function hideDiv(divid) {
             document.getElementById(divid).style.display = 'none';
         }
+
+        function toggleLangeTitel(titleid) {
+            if(document.getElementById(titleid).style.position == 'absolute' || document.getElementById(titleid).style.position == '') {
+                document.getElementById(titleid).style.position = 'relative';
+                document.getElementById(titleid).style.whiteSpace = 'normal';
+            } else {
+                document.getElementById(titleid).style.position = 'absolute';
+                document.getElementById(titleid).style.whiteSpace = 'nowrap';
+            }
+            
+        }
     </script>
 </head>
 
@@ -203,7 +214,7 @@ function do_action(string $a) {
         ?>
     
     <div id="infobox" class="info" onclick="hideDiv('infobox')">
-        <?php if(!empty($info)) echo "<p>".$info."</p>"; ?>
+        <?php if(!empty($info)) echo "<p>".$info."<i class=\"tip\" style=\"text-align:center\">(Klik om te sluiten)</i></p>"; ?>
     </div>
 
     <div class="gridContainer">
@@ -253,11 +264,11 @@ function do_action(string $a) {
                             }
                             $last_id = $row['id'];
                             echo "<li class=\"response\">";
-                            echo "<div><b class=response_text>".$row['response']."</b> <a class=\"delete\" href=\"index.php?a=deleteResponse&id=".$row['id']."\"> <img src=\"delete.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></div>";
+                            echo "<div><b id=\"titel".$row['id']."\" class=\"response_text\" onclick=\"toggleLangeTitel('titel".$row['id']."')\">".$row['response']."</b> <a class=\"delete\" href=\"index.php?a=deleteResponse&id=".$row['id']."\" title=\"Antwoord verwijderen\"> <img src=\"delete.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></div>";
                             echo "<div><ul>";
-                            if($row['keyword'] != null) echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
+                            if($row['keyword'] != null) echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\" title=\"Verbinding verwijderen\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
                         } else { // zelfde antwoord
-                            echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
+                            echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\" title=\"Verbinding verwijderen\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
                         }
                     }
                     echo "</ul>"; // sluit laatste item af
@@ -292,7 +303,7 @@ function do_action(string $a) {
                     if($mysql_result->num_rows == 0) echo "Geen keywoorden gevonden.";
                     
                     while ($row = $mysql_result->fetch_assoc()) {
-                        echo "<li>".$row['keyword']." <a href=\"index.php?a=deleteKeyword&id=".$row['id']."\"><img src=\"delete.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
+                        echo "<li>".$row['keyword']." <a href=\"index.php?a=deleteKeyword&id=".$row['id']."\" title=\"Keywoord verwijderen\"><img src=\"delete.png\" width=\"16\" height=\"16\" style=\"vertical-align: -10%\" /></a></li>";
                     }
                     ?>
                 </ul>
