@@ -87,14 +87,16 @@ function do_action(string $a) {
             $posted_response_keywords = htmlspecialchars($_POST['keywords']);
             $response->set_response($posted_response);
             $bind_keywords = explode(',', $posted_response_keywords);
-            foreach($bind_keywords as $bind_keyword) {
-                $keyword = new keyword();
-                if(!$keyword->get_keyword_by_name(trim($bind_keyword))) {
-                    // keywoord niet gevonden, voeg toe.
-                    $keyword->set_keyword(trim($bind_keyword));
-                    $keyword->save();
+            if(count($bind_keywords) > 0) {
+                foreach($bind_keywords as $bind_keyword) {
+                    $keyword = new keyword();
+                    if(!$keyword->get_keyword_by_name(trim($bind_keyword))) {
+                        // keywoord niet gevonden, voeg toe.
+                        $keyword->set_keyword(trim($bind_keyword));
+                        $keyword->save();
+                    }
+                    $response->bind_response_to_keyword($keyword->get_id());
                 }
-                $response->bind_response_to_keyword($keyword->get_id());
             }
             if($response->save()) {
                 return "Antwoord Toegevoegd: <br>".nl2br($posted_response);
@@ -283,9 +285,11 @@ function do_action(string $a) {
                         } else { // zelfde antwoord
                             echo "<li>".$row['keyword']." <a href=\"index.php?a=unlinkKeyword&respid=".$row['id']."&keyid=".$row['keyword_id']."\"> <img src=\"unlink.png\" width=\"16\" style=\"vertical-align: -10%\" /></a></li>";
                         }
-                        
-                        
                     }
+                    echo '<form action="index.php?a=linkKeyword&respid='.$last_id.'" method="post">
+                                <input name="keyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
+                                <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
+                                </form>';
                     ?>
                 </ul>
             </div>
