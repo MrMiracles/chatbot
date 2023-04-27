@@ -89,8 +89,6 @@
             $parameters[] = $this->search_query; // add search query to parameters
         }
 
-         echo $sql;
-
         $mysql_prepare = $this->mysql_connection->prepare($sql);
         $mysql_prepare->bind_param(str_repeat('s', count($parameters)), ...$parameters);
         $mysql_prepare->execute();
