@@ -40,49 +40,53 @@
      * @return mixed array(array(id, response)) or false on failure (no rounds not found)
      * 
      */
-    public function get_responses() : array {
+    public function get_responses() : mixed {
         if($this->new_search == false) return $this->responses; // return the previous responses if the keyword hasn't changed
+        $parameters = array();
 
         if(count($this->keywords_any) <= 0 && count($this->keywords_contains) <= 0) {
-            trigger_error('No keywords set, can\'t return anything.', E_USER_WARNING);
-            $this->keywords_any[] = '';
-        }
-
-        if(count($this->keywords_contains) == 0) {
             $sql = '
             SELECT DISTINCT r.id, r.response FROM
             responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
             LEFT JOIN keywords AS k ON k.id=x.keyword_id
-            WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").')
-            ORDER BY r.id';
-        } elseif(count($this->keywords_contains) > 1) {
-            $sql = '
-            SELECT DISTINCT r.id, r.response FROM
-            responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
-            LEFT JOIN keywords AS k ON k.id=x.keyword_id
-            WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
-            AND r.id in (
-                SELECT x.response_id as rid
-                FROM 
-                	keyword_x_responses AS x LEFT JOIN keywords AS k ON x.keyword_id=k.id
-                WHERE
-                	k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
-                GROUP BY
-                	rid
-                HAVING count(x.response_id) >= '.count($this->keywords_contains).'
-                )
             ORDER BY r.id';
         } else {
-            $sql = '
-            SELECT DISTINCT r.id, r.response FROM
-            responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
-            LEFT JOIN keywords AS k ON k.id=x.keyword_id
-            WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
-            AND k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
-            ORDER BY r.id';
-        }
+            if(count($this->keywords_contains) == 0) {
+                $sql = '
+                SELECT DISTINCT r.id, r.response FROM
+                responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
+                LEFT JOIN keywords AS k ON k.id=x.keyword_id
+                WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").')
+                ORDER BY r.id';
+            } elseif(count($this->keywords_contains) > 1) {
+                $sql = '
+                SELECT DISTINCT r.id, r.response FROM
+                responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
+                LEFT JOIN keywords AS k ON k.id=x.keyword_id
+                WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
+                AND r.id in (
+                    SELECT x.response_id as rid
+                    FROM 
+                        keyword_x_responses AS x LEFT JOIN keywords AS k ON x.keyword_id=k.id
+                    WHERE
+                        k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
+                    GROUP BY
+                        rid
+                    HAVING count(x.response_id) >= '.count($this->keywords_contains).'
+                    )
+                ORDER BY r.id';
+            } else {
+                $sql = '
+                SELECT DISTINCT r.id, r.response FROM
+                responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
+                LEFT JOIN keywords AS k ON k.id=x.keyword_id
+                WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
+                AND k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
+                ORDER BY r.id';
+            }
 
-        $parameters = array_merge($this->keywords_any, $this->keywords_contains); // combine both array's in one
+            $parameters = array_merge($this->keywords_any, $this->keywords_contains); // combine both array's in one
+        }
 
         if($this->search_query !== null) { // some searchquery givin, lets use it!
             $sql = "SELECT resp.response FROM (".$sql.") AS resp WHERE resp.response LIKE ?";
@@ -90,7 +94,9 @@
         }
 
         $mysql_prepare = $this->mysql_connection->prepare($sql);
-        $mysql_prepare->bind_param(str_repeat('s', count($parameters)), ...$parameters);
+        if(count($parameters) > 0) {
+            $mysql_prepare->bind_param(str_repeat('s', count($parameters)), ...$parameters);
+        }        
         $mysql_prepare->execute();
         $mysql_result = $mysql_prepare->get_result();
         if($mysql_result->num_rows == 0) return false; // return false if no rows are being fetched

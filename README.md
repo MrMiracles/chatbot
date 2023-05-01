@@ -50,8 +50,6 @@ Opbouw van het object:
 
     $array_antwoorden = $data->get_responses(); // geeft een array terug met de gevonden antwoorden
 
-**Let op:** Er moet minimaal één keywoord gegeven worden.
-
 ---
 
 ## Keyword class
