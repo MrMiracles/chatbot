@@ -121,8 +121,8 @@ class response {
         $mysql_prepare = $this->mysql_connection->prepare('SELECT k.id, k.keyword FROM keywords AS k LEFT JOIN keyword_x_responses AS x ON x.keyword_id = k.id WHERE x.response_id=?');
         $mysql_prepare->bind_param('i', $this->id);
         $mysql_prepare->execute();
-        if($mysql_prepare->num_rows() <= 0 ) return false; // return false if no keywords are found
         $mysql_result = $mysql_prepare->get_result();
+        if($mysql_result->num_rows <= 0 ) return false; // return false if no keywords are found
         $keywords = array();
         while ($row = $mysql_result->fetch_assoc()) {
             $keywords[] = array('id' => $row['id'], 'keyword' => $row['keyword']);
