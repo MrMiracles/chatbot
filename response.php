@@ -11,6 +11,7 @@
  *      get() : array
  *      get_id() : int
  *      get_response() : string
+ *      get_keywords() : array : bool
  * 
  *      get_response_by_id(<int>) : bool
  *     
@@ -106,6 +107,27 @@ class response {
      */
     public function get_response() : string {
         return $this->response;
+    }
+
+    /**
+     * Returns the keywords bound to this response
+     *
+     * @return array(id, keyword) or Boolean false when no keywords are found
+     * 
+     */
+    public function get_keywords() : mixed {
+        if($this->id === null) return false; // return false if there is no response id
+
+        $mysql_prepare = $this->mysql_connection->prepare('SELECT k.id, k.keyword FROM keywords AS k LEFT JOIN keyword_x_responses AS x ON x.keyword_id = k.id WHERE x.response_id=?');
+        $mysql_prepare->bind_param('i', $this->id);
+        $mysql_prepare->execute();
+        if($mysql_prepare->num_rows() <= 0 ) return false; // return false if no keywords are found
+        $mysql_result = $mysql_prepare->get_result();
+        $keywords = array();
+        while ($row = $mysql_result->fetch_assoc()) {
+            $keywords[] = array('id' => $row['id'], 'keyword' => $row['keyword']);
+        }
+        return $keywords;
     }
 
     /**

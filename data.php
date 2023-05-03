@@ -46,43 +46,69 @@
 
         if(count($this->keywords_any) <= 0 && count($this->keywords_contains) <= 0) {
             $sql = '
-            SELECT DISTINCT r.id, r.response FROM
-            responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
-            LEFT JOIN keywords AS k ON k.id=x.keyword_id
-            ORDER BY r.id';
+            SELECT 
+                DISTINCT r.id, r.response 
+            FROM
+                responses AS r 
+            LEFT JOIN 
+                keyword_x_responses AS x ON r.id=x.response_id
+            LEFT JOIN 
+                keywords AS k ON k.id=x.keyword_id
+            ORDER BY 
+                r.id';
         } else {
             if(count($this->keywords_contains) == 0) {
                 $sql = '
-                SELECT DISTINCT r.id, r.response FROM
-                responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
-                LEFT JOIN keywords AS k ON k.id=x.keyword_id
-                WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").')
-                ORDER BY r.id';
+                SELECT 
+                    DISTINCT r.id, r.response 
+                FROM
+                    responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
+                LEFT JOIN 
+                    keywords AS k ON k.id=x.keyword_id
+                WHERE 
+                    k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").')
+                ORDER BY 
+                    r.id';
             } elseif(count($this->keywords_contains) > 1) {
                 $sql = '
-                SELECT DISTINCT r.id, r.response FROM
-                responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
-                LEFT JOIN keywords AS k ON k.id=x.keyword_id
-                WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
-                AND r.id in (
-                    SELECT x.response_id as rid
-                    FROM 
-                        keyword_x_responses AS x LEFT JOIN keywords AS k ON x.keyword_id=k.id
-                    WHERE
-                        k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
-                    GROUP BY
-                        rid
-                    HAVING count(x.response_id) >= '.count($this->keywords_contains).'
-                    )
-                ORDER BY r.id';
+                SELECT DISTINCT 
+                    r.id, r.response 
+                FROM
+                    responses AS r 
+                LEFT JOIN 
+                    keyword_x_responses AS x ON r.id=x.response_id
+                LEFT JOIN 
+                    keywords AS k ON k.id=x.keyword_id
+                WHERE 
+                    k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
+                    AND r.id in (
+                        SELECT x.response_id as rid
+                        FROM 
+                            keyword_x_responses AS x LEFT JOIN keywords AS k ON x.keyword_id=k.id
+                        WHERE
+                            k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
+                        GROUP BY
+                            rid
+                        HAVING count(x.response_id) >= '.count($this->keywords_contains).'
+                        )
+                ORDER BY 
+                    r.id';
             } else {
                 $sql = '
-                SELECT DISTINCT r.id, r.response FROM
-                responses AS r LEFT JOIN keyword_x_responses AS x ON r.id=x.response_id
-                LEFT JOIN keywords AS k ON k.id=x.keyword_id
-                WHERE k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
-                AND k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
-                ORDER BY r.id';
+                SELECT DISTINCT 
+                    r.id, r.response 
+                FROM
+                    responses AS r 
+                LEFT JOIN 
+                    keyword_x_responses AS x ON r.id=x.response_id
+                LEFT JOIN 
+                    keywords AS k ON k.id=x.keyword_id
+                WHERE 
+                    k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").') 
+                AND 
+                    k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
+                ORDER BY 
+                    r.id';
             }
 
             $parameters = array_merge($this->keywords_any, $this->keywords_contains); // combine both array's in one
