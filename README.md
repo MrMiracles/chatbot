@@ -138,3 +138,9 @@ opbouw van het object:
     $response->save();  // slaat de response op in de database
     $response->delete();  // verwijderd de response uit de database
     
+
+## Icons
+- [Eye icons created by Kiranshastry - Flaticon](https://www.flaticon.com/free-icons/eye)
+- [Search icons created by Kiranshastry - Flaticon](https://www.flaticon.com/free-icons/search)
+- [Delete icons created by Arkinasi - Flaticon](https://www.flaticon.com/free-icons/delete)
+- [Clear icons created by riajulislam - Flaticon](https://www.flaticon.com/free-icons/clear)
