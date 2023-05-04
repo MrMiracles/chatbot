@@ -1,6 +1,7 @@
 <?php
 include_once('../../config.php');
 include_once('../../response.php');
+include_once('../../keyword.php');
 session_start();
 
 /**

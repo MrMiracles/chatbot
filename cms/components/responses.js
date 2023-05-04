@@ -93,15 +93,15 @@ export default {
                 'keywords': this.newResponseKeywords
             }
 
-            let keywordsPromise = await fetch('./lib/add_response.php', {
+            let responsePromise = await fetch('./lib/add_response.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
                 body: JSON.stringify(body)
             });
-            if(keywordsPromise.ok) {
-                let json = await keywordsPromise.json();
+            if(responsePromise.ok) {
+                let json = await responsePromise.json();
                 if(json.succes) {
                     this.flash(json.msg, false, true);
                     this.newResponse = '';
@@ -111,7 +111,7 @@ export default {
                     this.flash(json.msg, true, false);
                 }
             } else {
-                console.log("Error! "+keywordsPromise.status);
+                console.log("Error! "+responsePromise.status);
             }
         },
 
