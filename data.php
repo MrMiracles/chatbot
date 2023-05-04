@@ -55,7 +55,7 @@
             LEFT JOIN 
                 keywords AS k ON k.id=x.keyword_id
             ORDER BY 
-                r.id';
+                r.id DESC';
         } else {
             if(count($this->keywords_contains) == 0) {
                 $sql = '
@@ -68,7 +68,7 @@
                 WHERE 
                     k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_any)), ", ").')
                 ORDER BY 
-                    r.id';
+                    r.id DESC';
             } elseif(count($this->keywords_contains) > 1) {
                 $sql = '
                 SELECT DISTINCT 
@@ -92,7 +92,7 @@
                         HAVING count(x.response_id) >= '.count($this->keywords_contains).'
                         )
                 ORDER BY 
-                    r.id';
+                    r.id DESC';
             } else {
                 $sql = '
                 SELECT DISTINCT 
@@ -108,7 +108,7 @@
                 AND 
                     k.keyword IN ('.rtrim(str_repeat('?, ', count($this->keywords_contains)), ", ").')
                 ORDER BY 
-                    r.id';
+                    r.id DESC';
             }
 
             $parameters = array_merge($this->keywords_any, $this->keywords_contains); // combine both array's in one
