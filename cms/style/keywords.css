@@ -1,0 +1,93 @@
+/*
+
+Containers keywords
+
+*/
+
+.containerKeywords {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    
+    width: max-content;
+}
+
+.addKeyword {
+    width:100%;
+    margin-bottom: 1em;
+    padding: 0.5em;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.addKeyword form {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto auto;
+    gap: 0.5em;
+}
+
+
+.containerKeywords label {
+    display: block;
+    grid-column: span 2;
+}
+
+/*
+
+search field
+
+*/
+
+.searchKeyword input {
+    width:100%;
+    background-image: url('icons/search.png');
+    background-position: 98%;
+    background-size: auto 70%;
+    background-repeat: no-repeat;
+}
+
+/*
+
+keyword list
+
+*/
+
+.containerKeywords ul {
+    list-style-type:none;
+    max-width: 100%;
+    min-width: 200px;
+    padding: 0;
+    margin: 0;
+}
+
+.containerKeywords li {
+    position: relative;
+    margin-top: 0.5em;
+    padding: 0.2em 2em 0.2em 0.5em;
+    cursor: pointer;
+}
+
+.containerKeywords li:hover {
+    background-color: #ececec8e;
+}
+
+.containerKeywords .selected {
+    background-color: #53b65b8e;
+}
+
+.containerKeywords .selected:hover {
+    background-color: #91db988e;
+}
+
+.containerKeywords li img {
+    transform: translateY(10%);
+}
+
+.containerKeywords li .delete {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    cursor: pointer;
+}

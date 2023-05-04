@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html  lang="nl-nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS - Chatbot Fontys</title>
+    <link rel="stylesheet" href="style/app.css">
+    <link rel="stylesheet" href="style/flash.css">
+    <link rel="stylesheet" href="style/login.css">
+    <link rel="stylesheet" href="style/keywords.css">
+    <link rel="stylesheet" href="style/responses.css">
+
+   
+</head>
+
+<body>
+    
+    <div id="app">
+        <login v-if="!userIsLoggedIn" @login-succes="loginSuccess"></login>
+          <button class="logout" @click="logout" v-if="userIsLoggedIn">Logout</button>
+        <div class="gridContainer">
+          <responses v-if="userIsLoggedIn" :filter-by-keywords="filterByKeywords" @refresh-keywords="refreshKeywords"></responses>
+          <keywords ref="keywordsRef" v-if="userIsLoggedIn" @filter-by-keyword="filterByKeyword"></keywords>
+        </div>
+    </div>
+
+    <script type="module">
+      import { createApp, version, computed } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+      import flash from './components/flash';
+      import login from './components/login';
+      import keywords from './components/keywords';
+      import responses from './components/responses';
+      
+
+      console.log(version);
+    
+      const app = createApp({
+        components: {
+            login, 
+            keywords,
+            responses
+        },
+
+        data() {
+          return {
+            userIsLoggedIn: false,
+            filterByKeywords: Array()
+          }
+        },
+
+        provide() {
+          return {
+            userIsLoggedIn: computed(() => this.userIsLoggedIn)
+          }
+        },
+
+        async mounted() {
+            // controleer of gebruiker al is ingelogd
+            
+            let loginPromise = await fetch('./lib/checklogin.php');
+            if(loginPromise.ok) {
+                let json = await loginPromise.json();
+                this.userIsLoggedIn = (json.succes) ? true : false;
+            } else {
+              console.log("Error! "+loginPromise.status);
+            }
+        },
+
+        methods :{
+
+          loginSuccess() {
+            this.userIsLoggedIn = true;
+          },
+
+          async logout() {
+            let loginPromise = await fetch('./lib/logout.php');
+            if(loginPromise.ok) {
+                let json = await loginPromise.json();
+                this.userIsLoggedIn = (json.succes) ? false : true;
+            } else {
+              console.log("Error! "+loginPromise.status);
+            }
+          },
+
+          filterByKeyword(keyword) {
+            if(this.filterByKeywords.includes(keyword)) {
+              this.filterByKeywords.splice(this.filterByKeywords.indexOf(keyword), 1);
+            } else {
+              this.filterByKeywords.push(keyword);
+            }
+            
+          },
+
+          refreshKeywords() {
+            this.$refs.keywordsRef.getKeywords();
+          }
+          
+        }
+      });
+      app.component('flash', flash)
+      app.config.unwrapInjectedRef = true; // only for vue version < 3.3, https://vuejs.org/guide/components/provide-inject.html#working-with-reactivity
+      app.mount('#app');
+
+    </script>
+
+</body>
+</html>
