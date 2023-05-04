@@ -37,26 +37,6 @@ Container responses
     gap: 3px;
 }
 
-/* smaller screen then 800px: */
-@media screen and (max-width: 800px) {
-    .addResponse form {
-        display: grid;
-        grid-template-rows: auto auto auto auto;
-        grid-template-columns: auto;
-        gap: 3px;
-    }
-
-    .addResponse label {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
-    .addResponse input {
-        grid-column: 1;
-        grid-row: 4;
-    }
-    
-}
 
 .containerResponses label {
     display: block;
@@ -145,7 +125,6 @@ Edit dialog
     padding: 1em;
 }
 
-
 .editdialog form {
     display: grid;
     width: 100%;
@@ -167,4 +146,37 @@ Edit dialog
     height: 100%;
     padding: 1em;
     border: 1px solid black;
+}
+
+
+
+
+
+
+/* smaller screen then 800px: */
+@media screen and (max-width: 800px) {
+    .addResponse form {
+        display: grid;
+        grid-template-rows: auto auto auto auto;
+        grid-template-columns: auto;
+        gap: 3px;
+    }
+
+    .addResponse label {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .addResponse input {
+        grid-column: 1;
+        grid-row: 4;
+    }
+
+    .editdialog {
+        height: 100%;
+        width: 100%;
+        padding: 5px;
+    }
+    
+    
 }
