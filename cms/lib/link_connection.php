@@ -44,12 +44,10 @@ if(!isset($jsonInput->respid) || !isset($jsonInput->keyword)) {   // No keyword 
 }
 
 
-$posted_keyword = htmlspecialchars($jsonInput->keyword);
-
 $keyword = new keyword();
-if(!$keyword->get_keyword_by_name($posted_keyword)) {
+if(!$keyword->get_keyword_by_name($jsonInput->keyword)) {
     // keywoord niet gevonden, voeg toe.
-    if(!$keyword->set_keyword($posted_keyword)) { // keywoord toevoegen mislukt
+    if(!$keyword->set_keyword($jsonInput->keyword)) { // keywoord toevoegen mislukt
         $return = array(
             'login' => true,
             'succes' => false,

@@ -40,7 +40,7 @@ if(empty($jsonInput->search)) { // no search words, user wants all the keywords
     $mysql_prepare = $mysql_connection->prepare('SELECT id, keyword FROM keywords ORDER BY id DESC');
 } else {
     $mysql_prepare = $mysql_connection->prepare('SELECT id, keyword FROM keywords WHERE keyword LIKE ? ORDER BY id DESC');
-    $searchValue = '%'.htmlspecialchars($jsonInput->search, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8').'%';
+    $searchValue = '%'.$jsonInput->search.'%';
     $mysql_prepare->bind_param('s', $searchValue);
 }
 

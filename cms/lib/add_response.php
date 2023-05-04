@@ -36,10 +36,8 @@ if(!isset($jsonInput->response) || !isset($jsonInput->keywords)) {
 
 // voeg response en keywords toe
 $response = new response();
-$posted_response = htmlspecialchars($jsonInput->response);
-$posted_response_keywords = htmlspecialchars($jsonInput->keywords);
-$response->set_response($posted_response);
-$bind_keywords = explode(',', $posted_response_keywords);
+$response->set_response($jsonInput->response);
+$bind_keywords = explode(',', $jsonInput->keywords);
 if(count($bind_keywords) > 0) {
     foreach($bind_keywords as $bind_keyword) {
         $keyword = new keyword();

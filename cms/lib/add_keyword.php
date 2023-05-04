@@ -48,8 +48,7 @@ if($mysql_connection->select_db(MYSQL_DB) === false) trigger_error('MySQL select
 
 // add keyword
 $keyword = new keyword();
-$postedKeyword = htmlspecialchars($jsonInput->keyword, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
-if(!$keyword->set_keyword($postedKeyword)) { // adding failed
+if(!$keyword->set_keyword($jsonInput->keyword)) { // adding failed
     $return = array(
         'login' => true,
         'succes' => false,

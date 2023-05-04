@@ -45,7 +45,7 @@ if(!$response->get_response_by_id(intval($jsonInput->id))) { // response niet ge
     exit;
 }
 
-$response->set_response(htmlspecialchars($jsonInput->response));
+$response->set_response($jsonInput->response);
 
 if($response->save()) {
     // return responses as JSON
