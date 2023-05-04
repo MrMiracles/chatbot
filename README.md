@@ -144,3 +144,4 @@ opbouw van het object:
 - [Search icons created by Kiranshastry - Flaticon](https://www.flaticon.com/free-icons/search)
 - [Delete icons created by Arkinasi - Flaticon](https://www.flaticon.com/free-icons/delete)
 - [Clear icons created by riajulislam - Flaticon](https://www.flaticon.com/free-icons/clear)
+- [Document icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/document)
