@@ -130,7 +130,7 @@ export default {
 
         <div class="keywordList">
             <ul>
-                <li class="card small" :class="{selected : keyword.selected}" v-for="keyword in keywords" :key="keyword.id" @click.self="filterResponsesByKeyword(keyword)">{{keyword.keyword}} 
+                <li class="card small" :class="{selected : keyword.selected}" v-for="keyword in keywords" :key="keyword.id" @click="filterResponsesByKeyword(keyword)">{{keyword.keyword}} 
                 <img src="style/icons/filtertby.png" title="Gefiltert op dit keywoord" width="16" height="16" v-if="keyword.selected">
                 <img class="delete" src="style/icons/delete.png" @click.prevent.stop="deleteKeyword(keyword.id)" title="Keywoord verwijderen" width="16" height="16">   
                 </li>
