@@ -83,11 +83,11 @@
             }
           },
 
-          filterByKeyword(keyword) {
+          filterByKeyword(keyword, remove=false) {
             if(this.filterByKeywords.includes(keyword)) {
               this.filterByKeywords.splice(this.filterByKeywords.indexOf(keyword), 1);
             } else {
-              this.filterByKeywords.push(keyword);
+              if(!remove) this.filterByKeywords.push(keyword);
             }
             
           },

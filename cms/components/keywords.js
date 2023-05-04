@@ -73,9 +73,11 @@ export default {
             }
         },
 
-        async deleteKeyword(id) {
+        async deleteKeyword(keyword) {
+            this.filterResponsesByKeyword(keyword, true); // remove keyword from filterlist
+
             let body = {
-                'id': id
+                'id': keyword.id
             }
 
             let keywordsPromise = await fetch('./lib/delete_keyword.php', {
@@ -98,8 +100,8 @@ export default {
             }
         },
 
-        filterResponsesByKeyword(keyword) {
-            this.$emit('filterByKeyword', keyword.keyword);
+        filterResponsesByKeyword(keyword, remove=false) {
+            this.$emit('filterByKeyword', keyword.keyword, remove);
             keyword.selected=(keyword.selected) ? false : true;
         },
 
@@ -132,7 +134,7 @@ export default {
             <ul>
                 <li class="card small" :class="{selected : keyword.selected}" v-for="keyword in keywords" :key="keyword.id" @click="filterResponsesByKeyword(keyword)">{{keyword.keyword}} 
                 <img src="style/icons/filtertby.png" title="Gefiltert op dit keywoord" width="16" height="16" v-if="keyword.selected">
-                <img class="delete" src="style/icons/delete.png" @click.prevent.stop="deleteKeyword(keyword.id)" title="Keywoord verwijderen" width="16" height="16">   
+                <img class="delete" src="style/icons/delete.png" @click.prevent.stop="deleteKeyword(keyword)" title="Keywoord verwijderen" width="16" height="16">   
                 </li>
             </ul>
         </div>
