@@ -174,17 +174,13 @@ opbouw van het object:
     $stats->get_session(); // retuneert het huidige sessie ID (Dat wil je weten voor wanneer het gesprek verder gaat, bijboorbeeld: 55)
 
     $stats->keyword_hit(2); // slaat in de statistieken op dat het keywoord met ID 2 is gebruikt. Je kunt meerdere keywoorden in de statistieken opslaan door deze functie vaker achter elkaar te gebruiken.
-
     $stats->response_hit(15); // slaat in de statistieken op dat het antwoord met ID 15 is gebruikt. Je kunt meerdere antwoorden in de statistieken opslaan door deze functie vaker achter elkaar te gebruiken.
 
     $stats->response_like(15); // slaat in de statistieken op dat antwoord met ID 15 door de gebruiker geliked werd. Je kunt meerdere antwoorden in de statistieken liken door deze functie vaker achter elkaar te gebruiken.
-
     $stats->response_dislike(15); // slaat in de statistieken op dat antwoord met ID 15 door de gebruiker gedisliked werd. Je kunt meerdere antwoorden in de statistieken disliken door deze functie vaker achter elkaar te gebruiken.
 
     $stats->get_liked_responses(); // geeft alle gelikede antwoorden uit deze sessie terug (als een array met response objecten).
-
     $stats->get_disliked_responses(); // geeft alle gedislikede antwoorden uit deze sessie terug (als een array met response objecten).
-
     $stats->get_keywords_used_by_response(15); // geeft alle keywords terug die gebruikt zijn om antwoord met ID 15 te geven. 
 
     $stats->save(); // gebruik deze functie op alle hits, likes en dislikes op te slaan in de database.
