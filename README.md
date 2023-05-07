@@ -138,6 +138,58 @@ opbouw van het object:
     $response->save();  // slaat de response op in de database
     $response->delete();  // verwijderd de response uit de database
     
+---
+
+## Stats class
+
+opbouw van het object:
+
+
+    stats {
+
+        start_new_session()
+        set_session(int)
+        get_session() : int
+
+        keyword_hit(int) : bool
+        response_hit(int) : bool
+
+        response_like(int) : bool
+        response_dislike(int) : bool
+
+        get_liked_responses() : array|null
+        get_disliked_responses() : array|null
+        get_keywords_used_by_response(int) : array|null
+
+        save() : bool
+
+    }
+  
+### voorbeeld
+    
+    $stats = new stats(); // initialiseer object
+
+    $stats->start_new_session(); // start een nieuwe sessie, alleen gebruiken als er ook echt een nieuw gesprek wordt gestart. Deze functie retuneert het nieuwe sessie ID (bijvoorbeeld: 55)
+    $stats->set_session(55); // zet het sessie ID op 55, gebruik dit als het gesprek verder gaat.
+    $stats->get_session(); // retuneert het huidige sessie ID (Dat wil je weten voor wanneer het gesprek verder gaat, bijboorbeeld: 55)
+
+    $stats->keyword_hit(2); // slaat in de statistieken op dat het keywoord met ID 2 is gebruikt. Je kunt meerdere keywoorden in de statistieken opslaan door deze functie vaker achter elkaar te gebruiken.
+
+    $stats->response_hit(15); // slaat in de statistieken op dat het antwoord met ID 15 is gebruikt. Je kunt meerdere antwoorden in de statistieken opslaan door deze functie vaker achter elkaar te gebruiken.
+
+    $stats->response_like(15); // slaat in de statistieken op dat antwoord met ID 15 door de gebruiker geliked werd. Je kunt meerdere antwoorden in de statistieken liken door deze functie vaker achter elkaar te gebruiken.
+
+    $stats->response_dislike(15); // slaat in de statistieken op dat antwoord met ID 15 door de gebruiker gedisliked werd. Je kunt meerdere antwoorden in de statistieken disliken door deze functie vaker achter elkaar te gebruiken.
+
+    $stats->get_liked_responses(); // geeft alle gelikede antwoorden uit deze sessie terug (als een array met response objecten).
+
+    $stats->get_disliked_responses(); // geeft alle gedislikede antwoorden uit deze sessie terug (als een array met response objecten).
+
+    $stats->get_keywords_used_by_response(15); // geeft alle keywords terug die gebruikt zijn om antwoord met ID 15 te geven. 
+
+    $stats->save(); // gebruik deze functie op alle hits, likes en dislikes op te slaan in de database.
+
+---
 
 ## Icons
 - [Eye icons created by Kiranshastry - Flaticon](https://www.flaticon.com/free-icons/eye)
