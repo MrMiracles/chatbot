@@ -37,10 +37,10 @@
     /**
      * returns array of responses found using the givin keywords
      *
-     * @return mixed array(array(id, response)) or false on failure (no rounds not found)
+     * @return array|null array(array(id, response)) or null on failure (no responses found)
      * 
      */
-    public function get_responses() : mixed {
+    public function get_responses() : ?array {
         if($this->new_search == false) return $this->responses; // return the previous responses if the keyword hasn't changed
         $parameters = array();
 
@@ -125,7 +125,7 @@
         }        
         $mysql_prepare->execute();
         $mysql_result = $mysql_prepare->get_result();
-        if($mysql_result->num_rows == 0) return false; // return false if no rows are being fetched
+        if($mysql_result->num_rows == 0) return null; // return null if no rows are being fetched
 		
 		while ($row = $mysql_result->fetch_assoc()) {
 			$this->responses[] = $row;

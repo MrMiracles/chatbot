@@ -112,17 +112,17 @@ class response {
     /**
      * Returns the keywords bound to this response
      *
-     * @return array(id, keyword) or Boolean false when no keywords are found
+     * @return array|null array(id, keyword) or null when no keywords are found
      * 
      */
-    public function get_keywords() : mixed {
-        if($this->id === null) return false; // return false if there is no response id
+    public function get_keywords() : ?array {
+        if($this->id === null) trigger_error('Response ID not set',E_USER_ERROR); // trigger error if there is no response id
 
         $mysql_prepare = $this->mysql_connection->prepare('SELECT k.id, k.keyword FROM keywords AS k LEFT JOIN keyword_x_responses AS x ON x.keyword_id = k.id WHERE x.response_id=?');
         $mysql_prepare->bind_param('i', $this->id);
         $mysql_prepare->execute();
         $mysql_result = $mysql_prepare->get_result();
-        if($mysql_result->num_rows <= 0 ) return false; // return false if no keywords are found
+        if($mysql_result->num_rows <= 0 ) return null; // return null if no keywords are found
         $keywords = array();
         while ($row = $mysql_result->fetch_assoc()) {
             $keywords[] = array('id' => $row['id'], 'keyword' => $row['keyword']);

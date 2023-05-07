@@ -34,8 +34,8 @@ Opbouw van het object:
 
         get_responses() : array : bool
         
-        filter_by_keyword(<string>, [<bool>]) : bool
-        search(<string>)
+        filter_by_keyword(string>, [bool>]) : bool
+        search(string)
 
     }
 
@@ -48,7 +48,7 @@ Opbouw van het object:
     $data->search('zoekwoord'); // zoekt binnen alle gefilterde antwoorden naar 'zoekwoord'. Gebruik % als wildcard (zie functie commentaar voor verdere uitleg)
 
 
-    $array_antwoorden = $data->get_responses(); // geeft een array terug met de gevonden antwoorden, false indien geen responses gevonden
+    $array_antwoorden = $data->get_responses(); // geeft een array terug met de gevonden antwoorden, null indien geen responses gevonden
 
 ---
 
@@ -58,17 +58,17 @@ opbouw van het object:
 
     keyword {
  
-      set_keyword(<string>) : bool
+      set_keyword(string) : bool
 
-      bind_keyword_to_response(<int>) : bool
-      remove_bind_to_response(<int>) : bool
+      bind_keyword_to_response(int) : bool
+      remove_bind_to_response(int) : bool
  
       get() : array
       get_id() : int
       get_keyword(): string
  
-      get_keyword_by_id(<string>): bool
-      get_keyword_by_name(<string>) : bool
+      get_keyword_by_id(string): bool
+      get_keyword_by_name(string) : bool
      
       save() : bool
       delete() : bool
@@ -102,17 +102,17 @@ opbouw van het object:
 
     response {
 
-       set_response(<string>) : bool
+       set_response(string) : bool
 
-       bind_response_to_keyword(<int>) : bool
-       remove_bind_to_keyword(<int>) : bool
+       bind_response_to_keyword(int) : bool
+       remove_bind_to_keyword(int) : bool
        
        get() : array
        get_id() : int
        get_response() : string
-       get_keywords : array : bool
+       get_keywords : array|null
   
-       get_response_by_id(<int>) : bool
+       get_response_by_id(int) : bool
       
        save() : bool
        delete() : bool
@@ -132,7 +132,7 @@ opbouw van het object:
     $response->get();  // geeft een array terug met het id en de response ([id=>3, response=>'Blabla mooi antwoord.'])
     $response->get_id();  // geeft het id van de response terug (3)
     $response->get_response();  // geeft de response zelf terug als string (Blabla mooi antwoord.)
-    $response->get_keywords();  // geeft de keywoorden terug die horen bij deze repsonse of false als er geen keywoorden gevonden zijn
+    $response->get_keywords();  // geeft de keywoorden terug die horen bij deze repsonse of null als er geen keywoorden gevonden zijn
 
 
     $response->save();  // slaat de response op in de database
