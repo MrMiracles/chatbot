@@ -15,7 +15,7 @@ if($jsonInput === null) trigger_error('Wrong JSON formatting, couldnt decode.', 
 
 if(isset($jsonInput->password)) { // nieuwe login poging komt binnen
 
-        if($jsonInput->password == CMS_PASS) { // login succes
+        if(password_verify($jsonInput->password,CMS_PASS)) { // login succes
             $_SESSION['login'] = true;  // log gebruiker in voor deze sessie
             $return = array(
                 'login' => true,
