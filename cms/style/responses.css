@@ -100,7 +100,7 @@ response list
     top: 5px;
 }
 
-.responseList .buttons img {
+.responseList .actionButtons img {
     cursor: pointer;
 }
 

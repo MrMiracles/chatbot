@@ -57,17 +57,17 @@ Dialog
     height: 100%;
     background-color: rgba(0,0,0,0.4);
     backdrop-filter: blur(2px);
+    overflow-y: auto;
 }
 
 .vuedialog-content {
     position: relative;
     left: 50%;
-    top: 30%;
+    top: 20%;
     transform: translateX(-50%);
     width: fit-content;
     height: fit-content;
     max-width: 95%;
-    max-height: 90%;
 
     border-radius: 1em;
 
@@ -82,6 +82,11 @@ Dialog
         display: grid;
         grid-template-columns: auto;
         grid-template-rows: auto auto;
+    }
+
+    .vuedialog-content {
+        top: 1em;
+        margin-bottom: 2em; 
     }
 }
 
