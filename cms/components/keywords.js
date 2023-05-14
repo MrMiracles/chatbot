@@ -1,6 +1,6 @@
 export default {
     inject: ['userIsLoggedIn'],
-    emits: ['filterByKeyword'],
+    emits: ['filterByKeyword', 'refreshResponses'],
     data() {
         return {
             flashMsg: '',
@@ -92,6 +92,7 @@ export default {
                 if(json.succes) {
                     this.flash(json.msg, false, true);
                     this.getKeywords();
+                    this.$emit('refreshResponses');
                 } else {
                     this.flash(json.msg, true, false);
                 }

@@ -121,8 +121,6 @@ export default {
         },
 
         async editResponse(response) {
-
-            response.response = response.newResponse;
             response.edit.close();
         
             let body = {
@@ -150,7 +148,6 @@ export default {
             }
             
         },
-
 
         async deleteResponse(id) {
             if (!confirm("Weet je zeker dat je dit antwoord wilt verwijderen?")) return false; // laatste waarschuwing
@@ -232,8 +229,9 @@ export default {
             }
         },
 
-        saveSelectedKeywords: async function(response, keywords) {
-            response.selectKeywords.close();
+        async saveSelectedKeywords(response, keywords) {
+            response.selectKeywordsShow=false; // close dialog
+
             let body = {
                 'respid': response.id,
                 'keyword': keywords
@@ -321,15 +319,19 @@ export default {
                                 {{keyword.keyword}} <img src="style/icons/unlink.png"  @click.prevent="unlinkConnection(response.id, keyword.id)" style="vertical-align: -10%; cursor: pointer" width="16" height="16" title="Verbinding verwijderen">
                             </li>
                         </ul>
-                        <div class="newKeywords"><a @click.prevent="response.selectKeywords.showModal()">Selecteer keywoorden uit de tekst</a> of voeg een nieuw keywoord toe:</div>
+                        <div class="newKeywords"><a @click.prevent="response.selectKeywordsShow=true">Selecteer keywoorden uit de tekst</a> of voeg een nieuw keywoord toe:</div>
                         <form @submit.prevent="linkConnection(response)">
                             <input name="keyword" v-model="response.newKeyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
                             <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
                         </form>
                     </div>
-                    <dialog class="editdialog" :ref="(el) => { response.selectKeywords = el }">
-                        <selectKeywords :response="response" @close="response.selectKeywords.close()" @save="saveSelectedKeywords"></selectKeywords>
-                    </dialog>
+                    <Teleport to="body">
+                    <div class="vuedialog" v-if="response.selectKeywordsShow==true">
+                        <div class="vuedialog-content">
+                            <selectKeywords :response="response" @close="response.selectKeywordsShow=false" @save="saveSelectedKeywords"></selectKeywords>
+                        </div>
+                    </div>
+                    </Teleport>
                 </li>
             </ul>
         </div>

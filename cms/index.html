@@ -21,8 +21,8 @@
         <login v-if="!userIsLoggedIn" @login-succes="loginSuccess"></login>
           <button class="logout" @click="logout" v-if="userIsLoggedIn">Logout</button>
         <div class="gridContainer">
-          <responses v-if="userIsLoggedIn" :filter-by-keywords="filterByKeywords" @refresh-keywords="refreshKeywords"></responses>
-          <keywords ref="keywordsRef" v-if="userIsLoggedIn" @filter-by-keyword="filterByKeyword"></keywords>
+          <responses ref="responsesRef" v-if="userIsLoggedIn" :filter-by-keywords="filterByKeywords" @refresh-keywords="refreshKeywords"></responses>
+          <keywords ref="keywordsRef" v-if="userIsLoggedIn" @filter-by-keyword="filterByKeyword" @refresh-responses="refreshResponses"></keywords>
         </div>
     </div>
 
@@ -95,6 +95,10 @@
 
           refreshKeywords() {
             this.$refs.keywordsRef.getKeywords();
+          },
+
+          refreshResponses() {
+            this.$refs.responsesRef.getResponses();
           }
           
         }

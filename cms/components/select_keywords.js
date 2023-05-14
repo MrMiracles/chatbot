@@ -62,7 +62,7 @@ export default {
         </div>
         <i class="tip">Interpunctie wordt automatisch verwijderd bij het opslaan van de keywoorden.</i>
         <div class="buttons">
-            <button value="Annuleren" @click="$emit('close')" title="Sluit venster, keywords worden niet opgeslagen">Annuleren</button>
+            <button type="reset" value="Annuleren" @click="$emit('close')" title="Sluit venster, keywords worden niet opgeslagen">Annuleren</button>
             <button type="submit" value="opslaan" @click.prevent="save">Opslaan</button>
         </div>
     </div>   
