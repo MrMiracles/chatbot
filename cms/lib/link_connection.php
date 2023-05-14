@@ -1,6 +1,7 @@
 <?php
 include_once('../../config.php');
 include_once('../../keyword.php');
+include_once('../../response.php');
 session_start();
 
 /**
@@ -38,26 +39,13 @@ if(!isset($jsonInput->respid) || !isset($jsonInput->keyword)) {   // No keyword 
     $return = array(
         'login' => true,
         'succes' => false,
-        'msg' => 'Geen response of keywoord id gegeven');
+        'msg' => 'Geen response id of keywoord gegeven');
     echo json_encode($return); // return JSON data
     exit; // stop script
 }
 
-
-$keyword = new keyword();
-if(!$keyword->get_keyword_by_name($jsonInput->keyword)) {
-    // keywoord niet gevonden, voeg toe.
-    if(!$keyword->set_keyword($jsonInput->keyword)) { // keywoord toevoegen mislukt
-        $return = array(
-            'login' => true,
-            'succes' => false,
-            'msg' => 'Keywoord to kort (minimaal '.MIN_KEYWORD_LENGTH.' tekens) of te lang (meer dan 50 tekens).');
-        echo json_encode($return); // return JSON data
-        exit; // stop script
-    }
-}
-
-if(!$keyword->bind_keyword_to_response(intval($jsonInput->respid))) { // response niet gevonden
+$response = new response();
+if(!$response->get_response_by_id($jsonInput->respid)) { // response niet gevonden
     $return = array(
         'login' => true,
         'succes' => false,
@@ -66,11 +54,67 @@ if(!$keyword->bind_keyword_to_response(intval($jsonInput->respid))) { // respons
     exit; // stop script
 }
 
-if($keyword->save()) {
+$error = false;
+$success = false;
+if(is_array($jsonInput->keyword)) { // multiple keywords given
+
+    foreach($jsonInput->keyword as $newKeyword) {
+        
+        $keyword = new keyword();
+        if(!$keyword->get_keyword_by_name($newKeyword)) {
+            // keywoord niet gevonden, voeg toe.
+            if(!$keyword->set_keyword($newKeyword)) { // keywoord toevoegen mislukt
+                $error = true;
+                continue;
+            } else {
+                $keyword->save();
+                $success = true;
+            }
+        } else {
+            $success = true;
+        }
+        
+        $response->bind_response_to_keyword($keyword->get_id()); // verbinding maken met keyword
+
+    }
+} else { // single keyword given
+    
+
+    $keyword = new keyword();
+    if(!$keyword->get_keyword_by_name($jsonInput->keyword)) {
+        // keywoord niet gevonden, voeg toe.
+        if(!$keyword->set_keyword($jsonInput->keyword)) { // keywoord toevoegen mislukt
+            $return = array(
+                'login' => true,
+                'succes' => false,
+                'msg' => 'Keywoord to kort (minimaal '.MIN_KEYWORD_LENGTH.' tekens) of te lang (meer dan 50 tekens).');
+            echo json_encode($return); // return JSON data
+            exit; // stop script
+        } else {
+            $keyword->save();
+        }
+    }
+
+    $response->bind_response_to_keyword($keyword->get_id()); // verbinding maken met keyword
+    $success = true;
+}
+
+
+if($success != true) {
+    $return = array(
+        'login' => true,
+        'succes' => false,
+        'msg' => 'Link tussen antwoord en keywoorden gemaakt!');
+    echo json_encode($return); // return JSON data
+    exit; // stop script
+}
+
+if($response->save()) {
     $return = array(
         'login' => true,
         'succes' => true,
-        'msg' => 'Link tussen antwoord en keywoord gemaakt!');
+        'msg' => ($error) ? 'Keywoord to kort (minimaal '.MIN_KEYWORD_LENGTH.' tekens) of te lang (meer dan 50 tekens). Andere keywoorden toegevoegd!' : 'Link tussen antwoord en keywoord gemaakt!');
+    
 } else {
     $return = array(
         'login' => true,

@@ -1,6 +1,11 @@
+import selectKeywords from './select_keywords.js';
+
 export default {
     inject: ['userIsLoggedIn'],
     inheritAttrs: false,
+    components: {
+        selectKeywords
+    },
     emits: ['refreshKeywords'],
     props: {
         filterByKeywords: {
@@ -49,15 +54,15 @@ export default {
                 let body = {
                     'keywords': this.filterKeywords
                 }
-                let keywordsPromise = await fetch('./lib/get_responses.php', {
+                let responsePromise = await fetch('./lib/get_responses.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json;charset=utf-8'
                     },
                     body: JSON.stringify(body)
                 });
-                if(keywordsPromise.ok) {
-                    let json = await keywordsPromise.json();
+                if(responsePromise.ok) {
+                    let json = await responsePromise.json();
                     if(json.succes) {
                         this.responses = json.responses;
                     } else {
@@ -65,7 +70,7 @@ export default {
                         this.flash(json.msg, true, false);
                     }
                 } else {
-                    console.log("Error! "+keywordsPromise.status);
+                    console.log("Error! "+responsePromise.status);
                 }
             } else {
                 // geef alle keywords terug
@@ -117,22 +122,23 @@ export default {
 
         async editResponse(response) {
 
-            response.ref.close();
+            response.response = response.newResponse;
+            response.edit.close();
         
             let body = {
                 'id': response.id,
                 'response': response.newResponse
             }
 
-            let keywordsPromise = await fetch('./lib/update_response.php', {
+            let updatePromise = await fetch('./lib/update_response.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
                 body: JSON.stringify(body)
             });
-            if(keywordsPromise.ok) {
-                let json = await keywordsPromise.json();
+            if(updatePromise.ok) {
+                let json = await updatePromise.json();
                 if(json.succes) {
                     this.flash(json.msg, false, true);
                     this.getResponses();
@@ -140,7 +146,7 @@ export default {
                     this.flash(json.msg, true, false);
                 }
             } else {
-                console.log("Error! "+keywordsPromise.status);
+                console.log("Error! "+updatePromise.status);
             }
             
         },
@@ -178,15 +184,15 @@ export default {
                 'respid': response.id,
                 'keyword': response.newKeyword
             }
-            let unlinkPromise = await fetch('./lib/link_connection.php', {
+            let linkPromise = await fetch('./lib/link_connection.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },
                 body: JSON.stringify(body)
             });
-            if(unlinkPromise.ok) {
-                let json = await unlinkPromise.json();
+            if(linkPromise.ok) {
+                let json = await linkPromise.json();
                 if(json.succes) {
                     this.flash(json.msg, false, true);
                     this.getResponses();
@@ -196,7 +202,7 @@ export default {
                     this.flash(json.msg, true, false);
                 }
             } else {
-                console.log("Error! "+unlinkPromise.status);
+                console.log("Error! "+linkPromise.status);
             }
         },
 
@@ -226,6 +232,34 @@ export default {
             }
         },
 
+        saveSelectedKeywords: async function(response, keywords) {
+            response.selectKeywords.close();
+            let body = {
+                'respid': response.id,
+                'keyword': keywords
+            }
+            let saveSelectedPromise = await fetch('./lib/link_connection.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(body)
+            });
+            if(saveSelectedPromise.ok) {
+                let json = await saveSelectedPromise.json();
+                if(json.succes) {
+                    this.flash(json.msg, false, true);
+                    this.getResponses();
+                    this.getKeywords();
+                    this.$emit('refreshKeywords');
+                } else {
+                    this.flash(json.msg, true, false);
+                }
+            } else {
+                console.log("Error! "+saveSelectedPromise.status);
+            }
+        },
+
         flash(msg, error, success) {
             this.flashMsg = msg;
             this.success = success;  
@@ -241,8 +275,7 @@ export default {
                 this.getResponses();
             }
         }
-    },
-    
+    },    
     template: `
     <flash :msg="flashMsg" :error="this.error" :success="this.success" @hideflash="this.showFlash=false" v-if="this.showFlash" />
     <div class="containerResponses">
@@ -267,15 +300,16 @@ export default {
                 <li v-for="response in responses" class="response">
                     <div>
                         <b id="titel22" :class="(response.togglelong) ? 'responseTextLong' : 'responseText'" @click="response.togglelong = (response.togglelong ? false : true)">{{response.response}}</b> 
-                        <div class="buttons">
-                            <img src="style/icons/edit.png" @click.prevent="response.newResponse=response.response; response.ref.showModal()" width="16" height="16" title="Antwoord bewerken">
+                        <div class="actionButtons">
+                            <img src="style/icons/edit.png" @click.prevent="response.newResponse=response.response; response.edit.showModal()" width="16" height="16" title="Antwoord bewerken">
                             <img src="style/icons/delete.png" @click.prevent="deleteResponse(response.id)" width="16" height="16" title="Antwoord verwijderen">
                         </div>
-                        <dialog class="editdialog" :ref="(el) => { response.ref = el }">
+                        
+                        <dialog class="editdialog" :ref="(el) => { response.edit = el }">
                             <form @submit.prevent="editResponse(response)">
                                 <textarea v-model="response.newResponse"></textarea>
                                 <div>
-                                    <button value="Annuleren" @click.prevent="response.ref.close()" title="Sluit venster, alle wijziging worden ongedaan gemaakt">Annuleren</button>
+                                    <button value="Annuleren" @click.prevent="response.edit.close()" title="Sluit venster, alle wijziging worden ongedaan gemaakt">Annuleren</button>
                                     <button type="submit" value="opslaan">Opslaan</button>
                                 </div>
                             </form>
@@ -287,11 +321,15 @@ export default {
                                 {{keyword.keyword}} <img src="style/icons/unlink.png"  @click.prevent="unlinkConnection(response.id, keyword.id)" style="vertical-align: -10%; cursor: pointer" width="16" height="16" title="Verbinding verwijderen">
                             </li>
                         </ul>
+                        <div class="newKeywords"><a @click.prevent="response.selectKeywords.showModal()">Selecteer keywoorden uit de tekst</a> of voeg een nieuw keywoord toe:</div>
                         <form @submit.prevent="linkConnection(response)">
                             <input name="keyword" v-model="response.newKeyword" type="text" autocomplete="off" list="keywords" placeholder="Typ keywoord.">
                             <input type="submit" value="Verbinden!"> <i class="tip">(als het keywoord niet bestaat wordt deze toegevoegd)</i>
                         </form>
                     </div>
+                    <dialog class="editdialog" :ref="(el) => { response.selectKeywords = el }">
+                        <selectKeywords :response="response" @close="response.selectKeywords.close()" @save="saveSelectedKeywords"></selectKeywords>
+                    </dialog>
                 </li>
             </ul>
         </div>

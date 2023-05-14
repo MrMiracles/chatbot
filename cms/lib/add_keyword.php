@@ -48,7 +48,17 @@ if($mysql_connection->select_db(MYSQL_DB) === false) trigger_error('MySQL select
 
 // add keyword
 $keyword = new keyword();
-if(!$keyword->set_keyword($jsonInput->keyword)) { // adding failed
+$error = false;
+$success = false;
+if(is_array($jsonInput->keyword)) { // multiple keywords given
+    foreach($jsonInput->keyword as $newKeyword) {
+        if(!$keyword->set_keyword($newKeyword)) {
+            $error = true;
+        } else {
+            $succes = true;
+        }
+    }
+} else if(!$keyword->set_keyword($jsonInput->keyword)) { // adding failed
     $return = array(
         'login' => true,
         'succes' => false,
@@ -56,11 +66,21 @@ if(!$keyword->set_keyword($jsonInput->keyword)) { // adding failed
     echo json_encode($return); // return JSON data
     exit; // stop script
 }
+
+if($success != true) {
+    $return = array(
+        'login' => true,
+        'succes' => false,
+        'msg' => 'Keywoorden to kort (minimaal '.MIN_KEYWORD_LENGTH.' tekens) of te lang (meer dan 50 tekens).');
+    echo json_encode($return); // return JSON data
+    exit; // stop script
+}
+
 if($keyword->save()) {
     $return = array(
         'login' => true,
         'succes' => true,
-        'msg' => 'Keywoord toegevoegd!');
+        'msg' => ($error) ? 'Keywoord to kort (minimaal '.MIN_KEYWORD_LENGTH.' tekens) of te lang (meer dan 50 tekens).\nAndere keywoorden toegevoegd!' : 'Keywoord toegevoegd!');
     
 } else {
     $return = array(

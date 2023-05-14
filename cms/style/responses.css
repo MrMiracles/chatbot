@@ -65,6 +65,17 @@ response list
     z-index: 0;
 }
 
+.responseList .response:hover {
+    background-color: #ececec8e;
+}
+
+.responseList .response ul {
+    list-style-type:disc;
+    list-style-position: inside;
+    margin: 1.5em 0 1em 0;
+    padding: 0;
+}
+
 .responseList .responseText {
     position: absolute;
     display: inline-block;
@@ -80,7 +91,7 @@ response list
     white-space: normal;
 }
 
-.responseList .buttons {
+.responseList .response .actionButtons {
     position: absolute;
     display: grid;
     grid-template-columns: auto auto;
@@ -98,16 +109,14 @@ response list
     font-size: 0.8em;
 }
 
-
-.responseList .response ul {
-    list-style-type:disc;
-    list-style-position: inside;
-    margin: 1.5em 0 1em 0;
-    padding: 0;
+.newKeywords {
+    font-size: 0.8em;
 }
 
-.responseList .response:hover {
-    background-color: #ececec8e;
+.newKeywords a {
+    cursor: pointer;
+    color: #0000ff;
+    text-decoration: underline;
 }
 
 /*
