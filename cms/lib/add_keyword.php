@@ -65,6 +65,8 @@ if(is_array($jsonInput->keyword)) { // multiple keywords given
         'msg' => 'Keywoord to kort (minimaal '.MIN_KEYWORD_LENGTH.' tekens) of te lang (meer dan 50 tekens).');
     echo json_encode($return); // return JSON data
     exit; // stop script
+} else {
+    $success = true;
 }
 
 if($success != true) {
