@@ -43,7 +43,7 @@ if(isset($jsonInput->keywords)){
 
 // recieve keywords from database
 $responses = $data->get_responses();
-if($responses === false) {
+if($responses === null) {
     $return = array(
         'login' => true,
         'succes' => false,
