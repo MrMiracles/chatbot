@@ -34,7 +34,8 @@ Opbouw van het object:
 
         get_responses() : array : bool
         
-        filter_by_keyword(string>, [bool>]) : bool
+        get_keywords_from_sentence(string) : array|null
+        filter_by_keyword(string, [bool]) : bool
         search(string)
 
     }
@@ -42,6 +43,8 @@ Opbouw van het object:
 ### voorbeeld
 
     $data = new data(); // initialiseer object
+
+    data->get_keywords_from_sentence('Zoek in deze zin naar keywoorden die al in de database staan'); // geeft een array met keyword objecten terug van de keywoorden die in de tekst gevonden zijn. 
 
     $data->filter_by_keyword("D&I", true); // filter op het keywoord 'D&I', als het laatste argument 'true' is dan zijn alle antwoorden die terugkomen verbonden met dat keywoord
     $data->filter_by_keyword("banaan", false); // filter op het keywoord 'banaan', als het laatste argument 'false' is dan worden alle antwoorden die verbonden zijn met dat keywoord teruggegeven. 'false' is de standaard optie als je niks invult

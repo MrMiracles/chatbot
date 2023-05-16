@@ -16,6 +16,7 @@
  include_once('keyword.php');
  include_once('response.php');
 
+ if(!defined('MIN_KEYWORD_LENGTH')) trigger_error('Constant MIN_KEYWORD_LENGTH not set', E_USER_ERROR);
 
  class data {
 
@@ -172,6 +173,43 @@
     public function search(string $query) : bool {
         $this->search_query = $query;
         return true;
+    }
+
+    /**
+     * Looks for keywords in a sentence, gives keywords back that are already stored in the database.
+     *
+     * @param string $sentence
+     * 
+     * @return array|null array of keywords objects or null of non found
+     * 
+     */
+    public function get_keywords_from_sentence(string $sentence) : ?array {
+        
+        $sentence = str_ireplace([',', '.', '?', '!', '#', '\'', '"', '`'], '', $sentence); // removes .,!?'"`
+        $words = explode(' ', $sentence); // split up in words
+
+        $words = array_filter($words, function($var) { // filter words shorther than MIN_KEYWORD_LENGTH
+            return (strlen($var) < MIN_KEYWORD_LENGTH) ? false : true;
+        });
+
+        $sql = 'SELECT id FROM keywords WHERE ('.rtrim(str_repeat('keyword=? OR ', count($words)), "OR ").')';
+        
+        $mysql_prepare = $this->mysql_connection->prepare($sql);
+        if(count($words) > 0) {
+            $mysql_prepare->bind_param(str_repeat('s', count($words)), ...$words);
+        }        
+        $mysql_prepare->execute();
+        $mysql_result = $mysql_prepare->get_result();
+        if($mysql_result->num_rows == 0) return null; // return null if no rows are being fetched
+		
+        $keywords = array();
+		while ($row = $mysql_result->fetch_assoc()) {
+            $keyword = new keyword();
+            $keyword->get_keyword_by_id($row['id']);
+			$keywords[] = $keyword;
+		}
+        
+        return $keywords;
     }
 
 
