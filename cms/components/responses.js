@@ -1,10 +1,11 @@
 import selectKeywords from './select_keywords.js';
+import importResponses from './import_responses_csv.js';
 
 export default {
     inject: ['userIsLoggedIn'],
     inheritAttrs: false,
     components: {
-        selectKeywords
+        selectKeywords, importResponses
     },
     emits: ['refreshKeywords'],
     props: {
@@ -23,7 +24,8 @@ export default {
             keywords: Array,
             responses: Array,
             newResponse: '',
-            newResponseKeywords: ''
+            newResponseKeywords: '',
+            importResponseShow: false
         }
     },
 
@@ -276,13 +278,21 @@ export default {
     },    
     template: `
     <flash :msg="flashMsg" :error="this.error" :success="this.success" @hideflash="this.showFlash=false" v-if="this.showFlash" />
+    
+    <Teleport to="body">
+        <div class="vuedialog" v-if="importResponseShow==true">
+            <div class="vuedialog-content">
+                <importResponses @close="importResponseShow=false" @refreshResponses="getResponses()"></importResponses>
+            </div>
+        </div>
+    </Teleport>
     <div class="containerResponses">
 
         <h1>Antwoorden</h1>
 
         <div class="addResponse">
             <form @submit.prevent="addNewResponse()">
-                <label>Voeg antwoord toe:</label>
+                <div><label>Voeg antwoord toe:</label><a @click="importResponseShow=true">Importeer antwoorden</a></div>
                 <textarea name="response" v-model="newResponse" placeholder="Typ hier een antwoord."></textarea>
                 <textarea name="keywords" v-model="newResponseKeywords" placeholder="Typ hier keywords die verbonden moeten worden met het antwoord. Scheid de keywoorden met komma's."></textarea>
                 <input type="submit" value="Toevoegen">
