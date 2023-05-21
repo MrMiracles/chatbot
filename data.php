@@ -192,8 +192,10 @@
             return (strlen($var) < MIN_KEYWORD_LENGTH) ? false : true;
         });
 
+        if(count($words) < 1) return null; // return if no words are given
+
         $sql = 'SELECT id FROM keywords WHERE ('.rtrim(str_repeat('keyword=? OR ', count($words)), "OR ").')';
-        
+
         $mysql_prepare = $this->mysql_connection->prepare($sql);
         if(count($words) > 0) {
             $mysql_prepare->bind_param(str_repeat('s', count($words)), ...$words);
