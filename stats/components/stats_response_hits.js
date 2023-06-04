@@ -19,7 +19,7 @@ export default {
     mounted() {
         // date for datepickers, default 1 month in the past
         let date = new Date();
-        this.dateEnd = date.getFullYear()+'-'+(('0'+(date.getMonth()+1)).slice(-2))+'-'+(('0'+date.getDate()).slice(-2));
+        this.dateEnd = date.getFullYear()+'-'+(('0'+(date.getMonth()+1)).slice(-2))+'-'+(('0'+(date.getDate()+1)).slice(-2));
         date.setMonth(date.getMonth()-1);
         this.dateStart = date.getFullYear()+'-'+(('0'+(date.getMonth()+1)).slice(-2))+'-'+(('0'+date.getDate()).slice(-2));
 
