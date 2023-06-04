@@ -1,0 +1,63 @@
+.login_container {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 300px;
+    height: 200px;
+
+    padding: 1em;
+
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    animation: 4s ease-in-out 0s infinite alternate breath1;
+}
+
+.login_form {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 0.5em;
+}
+
+.login_message {
+    margin-top: 1em;
+    text-align: center;
+}
+
+.login_container.error {
+    box-shadow: rgba(145, 0, 0, 0.692) 0px 3px 8px;
+    animation: 4s ease-in-out 0s infinite alternate breath2;
+}
+
+
+
+@keyframes breath1 {
+    from {
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    to {
+        box-shadow: rgba(131, 131, 131, 0.24) 0px 3px 8px;
+    }
+}
+
+@keyframes breath2 {
+    from {
+        box-shadow: rgba(145, 0, 0, 0.692) 0px 3px 8px;
+    }
+    to {
+        box-shadow: rgba(133, 97, 97, 0.692) 0px 3px 8px;
+    }
+}
+
+
+/*
+
+Logout button
+
+*/
+
+.logout {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+}

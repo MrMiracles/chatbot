@@ -1,0 +1,55 @@
+.flash {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: max-content;
+    max-width: 90%;
+
+    padding: 0.5em 1em 0.5em 1em;
+    background-color: #575757cc;
+    backdrop-filter: blur(1px);
+
+    border-radius: 25px;
+
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.flash p {
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+}
+
+/* 
+
+    smaller screen then 800px: 
+    put flash on the bottom of the screen
+
+*/
+@media screen and (max-width: 800px) {
+    .flash {
+        top: auto;
+        bottom: 10%;
+    }
+}
+
+
+.flash.warning {
+    box-shadow: rgba(255, 153, 0, 0.815) 0px 0px 8px;
+}
+
+.flash.error {
+    box-shadow: rgba(255, 0, 0, 0.801) 0px 0px 8px;
+}
+
+.flash.success {
+    box-shadow: rgba(21, 184, 0, 0.76) 0px 0px 8px;
+}
+
+.flash.tip {
+    box-shadow: rgba(255, 251, 0, 0.76) 0px 0px 8px;
+}
