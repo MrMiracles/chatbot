@@ -112,7 +112,7 @@ export default {
     <Teleport to="body">
         <div class="vuedialog" v-if="showKeywordsByResponse" @click="showKeywordsByResponse=false">   
             <div class="vuedialog-content" @click.stop="">
-                <h1>Keywoord welke gelijdde tot antwoord</h1>
+                <h1>Keywoord welke leidde tot antwoord</h1>
                 <ul>
                     <li v-if="!error"><div><div><b>Keywoord</b></div><div><b>hits</b></div></div></li>
                     <li v-for="keyword in keywordByResponse" :key="keyword.id"><div><div>{{keyword.keyword}}</div><div>{{keyword.count}}</div></div></li>
