@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/opmaak.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<!-- Modal popup -->
+	<div id="myModal" class="modal">
+
+		<!-- Modal content -->
+		<div class="modal-content">
+		<div class="callout_cont">
+			<div class="callout">
+				<span class="close">&times;</span>
+				<div class="callout-container">
+					<p>
+						Is deze <span class="luk">LUK</span> raak?<br>
+						Ik hoor graag of het antwoord bij jouw vraag past.<br>
+						<!--<form method="post" action="php/likeResponse.php">-->
+							Druk op <button id="jaBtn" name="like">JA</button> of <button id="neeBtn" name="dislike">NEE</button>
+						<!--</form>-->
+					</p>
+				</div>
+			</div>
+			<!-- <span class="close">&times;</span> -->
+			<img src="images/pop_up.png" alt="popup" class="responsive_img">
+		</div>
+		</div>
+	</div>
+<div class="header">
+  <img src="images/lukraaklogo.png" class="responsive_logo">
+</div>
+
+<div class="row">
+  <div class="col-6 col-s-9">
+
+	<div id="bot">
+		<div id="container">	
+			<div id="body">	
+				<div id="welkom">
+					<p>Hi! Ik ben LUKraak. Ik help je graag bij het opzoek gaan naar de juiste LUK.
+						Graag wil ik weten of je de richting S&T, D&I of beide richtingen doet.
+						Typ nu je vraag in. Dan ga ik opzoek naar de juiste LUK.
+					</p>
+				</div>						
+          <!-- Dit deel wordt dynamisch vanuit JavaScript ingevoegd -->
+				<div class="userSection" style="display: none;">
+					<div class="messages user-message" style="display: none;">
+
+					</div>
+					<div class="seperator" style="display: none;"></div>
+				</div>
+				<div class="botSection" style="display: none;">
+					<div class="messages bot-reply" style="display: none;">
+
+					</div>
+					<div class="seperator" style="display: none;"></div>
+				</div>                
+			</div>
+
+			<div id="inputArea">
+				<input type="text" name="messages" id="userInput" placeholder="Vul hier jouw bericht in" required>
+				<button type="submit" id="send" value="Send" class="btn"><i class="fa fa-paper-plane"></i></button>
+				<!--<button id="myBtn">Open Modal</button> -->
+			</div>
+		</div>
+    </div>
+  </div>
+</div>
+    <!-- Verwijzing naar JavaScript bestand-->
+    <script src="js/chatscript.js"></script>
+	<script>
+
+	(function() {
+  var idleDurationSecs = 25;
+  //var redirectUrl = 'https://......com';  // Redirect idle users to this URL
+  var idleTimeout;
+
+  var resetIdleTimeout = function() {
+    if(idleTimeout) clearTimeout(idleTimeout);
+
+    idleTimeout = setTimeout(function(){
+		var botid =  document.getElementById('U1');
+		if (typeof(botid) != 'undefined' && botid != null){
+  			// botid U1 Exists.
+ 			modal.style.display = "block";
+			 document.getElementById("jaBtn").focus({ focusVisible: true });
+		}  
+    }, idleDurationSecs * 1000);
+  };
+
+  resetIdleTimeout();
+
+  ['click', 'touchstart', 'mousemove', 'scroll'].forEach(evt =>
+    document.addEventListener(evt, resetIdleTimeout, false)
+  );
+})();
+
+	// modal popup code
+	// Get the modal
+	var modal = document.getElementById("myModal");
+
+	// Get the button that opens the modal
+	var btn = document.getElementById("myBtn");
+
+	// Get the <span> element that closes the modal
+	var span = document.getElementsByClassName("close")[0];
+
+	// When the user clicks the button, open the modal 
+	//btn.onclick = function() {
+	//modal.style.display = "block";
+	//}
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+	modal.style.display = "none";
+	}
+	// When the user clicks on Ja button, close the modal
+	jaBtn.onclick = function() {
+	//modal.style.display = "none";
+	likeAjax();
+	}
+	// When the user clicks on Nee button, close the modal
+	neeBtn.onclick = function() {
+	//modal.style.display = "none";
+	dislikeAjax();
+	}
+	function likeAjax() {
+      $.ajax({
+           type: "POST",
+           url: 'php/likeResponse.php',
+           data:{action:'call_like'},
+           success:function(html) {
+             //alert(html); //tijdelijk: ivm debug
+           }
+      });
+	  modal.style.display = "none";
+ }
+ function dislikeAjax() {
+      $.ajax({
+           type: "POST",
+           url: 'php/likeResponse.php',
+           data:{action:'call_dislike'},
+           success:function(html) {
+             //alert(html); //tijdelijk: ivm debug
+           }
+      });
+	  modal.style.display = "none";
+ }
+	// When the user clicks anywhere outside of the modal, close it
+	//window.onclick = function(event) {
+	//	if (event.target == modal) {
+	//		modal.style.display = "none";
+	//	}
+	//}	
+	</script>
+</body>
+</html>
