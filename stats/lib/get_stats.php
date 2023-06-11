@@ -3,6 +3,10 @@ include_once('../../config.php');
 include_once('../../stats.php');
 session_start();
 
+// Debug opties
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 /**
  * 
  * Controleer of gebruiker is ingelogd
@@ -218,8 +222,9 @@ function get_keywords_used_by_response(&$mysql_connection, $id) : ?array {
     
     while ($row = $mysql_result->fetch_assoc()) {
         $keyword = new keyword();
-        $keyword->get_keyword_by_id($row['keyword_id']);
-        $keywords[] = array('id'=>$row['keyword_id'], 'count'=>$row['count'], 'keyword'=>$keyword->get_keyword());
+        if($keyword->get_keyword_by_id($row['keyword_id']) !== false) {
+            $keywords[] = array('id'=>$row['keyword_id'], 'count'=>$row['count'], 'keyword'=>$keyword->get_keyword());
+        }
     }
     return $keywords;
 }
@@ -250,8 +255,9 @@ function get_keywords_used_by_liked_response(&$mysql_connection, $id) : ?array {
     
     while ($row = $mysql_result->fetch_assoc()) {
         $keyword = new keyword();
-        $keyword->get_keyword_by_id($row['keyword_id']);
-        $keywords[] = array('id'=>$row['keyword_id'], 'count'=>$row['count'], 'keyword'=>$keyword->get_keyword());
+        if($keyword->get_keyword_by_id($row['keyword_id']) !== false) {
+            $keywords[] = array('id'=>$row['keyword_id'], 'count'=>$row['count'], 'keyword'=>$keyword->get_keyword());
+        }
     }
     return $keywords;
 }
@@ -281,8 +287,9 @@ function get_keywords_used_by_disliked_response(&$mysql_connection, $id) : ?arra
     
     while ($row = $mysql_result->fetch_assoc()) {
         $keyword = new keyword();
-        $keyword->get_keyword_by_id($row['keyword_id']);
-        $keywords[] = array('id'=>$row['keyword_id'], 'count'=>$row['count'], 'keyword'=>$keyword->get_keyword());
+        if($keyword->get_keyword_by_id($row['keyword_id']) !== false) {
+            $keywords[] = array('id'=>$row['keyword_id'], 'count'=>$row['count'], 'keyword'=>$keyword->get_keyword());
+        }
     }
     return $keywords;
 }
