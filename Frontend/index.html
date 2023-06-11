@@ -158,6 +158,19 @@
 	//		modal.style.display = "none";
 	//	}
 	//}	
+
+
+	// reageer op de + en de - knop.
+	window.addEventListener('keydown', (e) => {
+		if(e.key == '+') {
+			console.log('+ pressed');
+			likeAjax()
+		} else if(e.key == '-') {
+			console.log('- pressed');
+			dislikeAjax()
+		}
+	}, false);
+    	
 	</script>
 </body>
 </html>
