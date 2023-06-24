@@ -70,7 +70,7 @@ opbouw van het object:
       get_id() : int
       get_keyword(): string
  
-      get_keyword_by_id(string): bool
+      get_keyword_by_id(int): bool
       get_keyword_by_name(string) : bool
      
       save() : bool
